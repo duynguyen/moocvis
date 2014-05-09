@@ -61,7 +61,7 @@ def filterByUser(content, userId):
 	return newContent
 
 def importLectures():
-	content = getArrayFromCsv('1.csv')
+	content = getArrayFromCsv('lectures.csv')
 
 	for row in content:
 		combine = row['title'].split(' - ')[0].split(' ')[1].split('.')
@@ -71,6 +71,13 @@ def importLectures():
 			latest_modified = datetime.datetime.fromtimestamp(float(row['last_updated'])).replace(tzinfo=utc),
 			length = int(float(row['video_length'])), nonclick_rate = 0, original_id = int(row['id']),
 			course = Course.objects.last()).save()
+
+def importUsers():
+	content = getArrayFromCsv('users.csv')
+
+	for row in content:
+		User(user_id=row['user_id'], session_user_id = row['session_user_id'], eventing_user_id = row['eventing_user_id'],
+			country_code = row['country_code'], country_name = row['country_name']).save()
 
 def importSlides(content, week, week_order):
 	l = Lecture.objects.filter(week=int(week), week_order=int(week_order))[0]
