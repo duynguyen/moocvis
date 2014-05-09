@@ -1,3 +1,4 @@
 .elasticbeanstalk/
 moocs_vis_env/*
 files/*
+.DS_Store
