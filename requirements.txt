@@ -1,3 +1,4 @@
 Django==1.6.4
 MySQL-python==1.2.5
+boto==2.28.0
 wsgiref==0.1.2
