@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 
 from django.contrib.auth.models import User
+from lectures.models import Course
 from lectures.clickstream_handler import importLectures, importUsers
 
 if User.objects.count() == 0:
