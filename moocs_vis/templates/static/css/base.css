@@ -1,0 +1,176 @@
+.vis, .container {
+  position: relative;
+}
+
+h1 {
+  color: orange;
+}
+
+.dashboard {
+  display: inline;
+  margin-left: 10px;
+}
+
+.slide {
+  position: absolute;
+  border: 3px solid black;
+  left: 850px;
+  top: 420px;
+  width: 400px;
+  height: 230px;
+  margin: 0;
+}
+
+.slide img {
+  width: 400px;
+  height: 230px;
+}
+
+.bars {
+  position: absolute;
+  border: 3px solid black;
+  left: 50px;
+  top: 420px;
+  width: 600px;
+  height: 220px;
+  margin: 0;
+  font-size: 16px;
+  color: red;
+  padding: 10px 0 0 10px;
+
+}
+
+.bars .barchart {
+  width: 550px;
+  height: 100px;
+  margin-top: 5px;
+}
+
+.bars .throughput {
+  position: absolute;
+  bottom: 10px;
+  right: 20px;
+}
+
+.x.axis path {
+  display: none;
+}
+
+.node {
+  stroke: black;
+  stroke-width: 4.0px;
+}
+
+.link {
+  stroke: slategray;
+  stroke-opacity: 0.2;
+  fill: none;
+  stroke-width: 1.5px;
+}
+
+.legend {
+  position: absolute;
+  top: 70px;
+  left: 1180px;
+  width: 100px;
+  height: 70px;
+  background: #ffffff url("legend.png") no-repeat;
+  background-size: contain;
+}
+
+#compare-dialog {
+  font: 10px sans-serif;
+}
+
+#slide-dialog {
+  opacity: 1;
+}
+
+#slide-dialog .slide-dialog {
+  width: 100%;
+  height: 100%;
+}
+
+/* line chart of throughput */
+.axis path,
+.axis line {
+  fill: none;
+  stroke: #000;
+  shape-rendering: crispEdges;
+}
+
+.line {
+  fill: none;
+  stroke: steelblue;
+  stroke-width: 1.5px;
+}
+
+/* bar chart of go straight in modal */
+.gostraight_chart {
+  background: #b0e0f8;
+  margin: 5px;
+}
+ 
+.gostraight_chart rect {
+  stroke: white;
+  fill: steelblue;
+}
+ 
+.gostraight_chart text {
+  fill: white;
+}
+ 
+.gostraight_chart text.name {
+  fill: #000;
+}
+ 
+.gostraight_chart line {
+  stroke: #c1c1c1;
+}
+ 
+.gostraight_chart .rule {
+  fill: #000;
+}
+ 
+/* removed the while stroke as we don't need it anymore */
+.gostraight_chart rect {
+  stroke: none;
+}
+ 
+/* a bit of hovering effect for each bar */
+.gostraight_chart rect:hover {
+  fill: #64707D;
+}
+
+.visible {
+  visibility: visible;
+}
+
+.hidden {
+  visibility: hidden;
+}
+
+.invisible {
+  display: none;
+}
+
+.tooltip {                   /* set the CSS for tooltip divs */
+  position: absolute;         /* reference for measurement */
+  text-align: center;         /* align the text to the center */
+  width: 300px;                    /* set the width of the rectangle */
+  height: 180px;                   /* set the height of the   rectangle */
+  padding: 2px;                   /* set a border around the rectangle */
+  font: 12px sans-serif;      /* set the font type for the tooltips */
+  background: #fff; /* set the colour of the rectangle */
+  border: 0px;                    /* turn off the border (0px) */
+  pointer-events: none;           /* 'none' tells the mouse to ignore the rectangle */
+  z-index: 10;
+  top: 0;
+}
+
+
+.indicator_option {
+  border: 3px solid #666;
+  padding: 10px;
+  margin: 10px;
+}

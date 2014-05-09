@@ -1,0 +1,16 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN">
+<html lang="en">
+<head>
+    <title>{% block title %}{% endblock %}</title>
+    <link rel="stylesheet" href="{{ STATIC_URL }}css/base.css" />
+</head>
+<body>
+    <h1>MOOCs clickstream visualization project</h1>
+	{% include "nav.html" %}
+    {% block content %}{% endblock %}
+    {% block footer %}
+    <hr>
+    <p>CEDE Lab. EPFL.</p>
+    {% endblock %}
+</body>
+</html>

@@ -1,0 +1,32 @@
+{% extends "base.html" %}
+
+{% block title %}Visualization per lecture video{% endblock %}
+
+{% block content %}
+<h2>Visualization per lecture video</h2>
+<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
+<script src="http://d3js.org/d3.v3.js"></script>
+<script src="http://code.jquery.com/ui/1.10.4/jquery-ui.js"></script>
+<div class='container'>
+	<form id='#search_form' method='get'>
+		<select id='lecture_q' name='lecture_q'>
+			{% for l in lecture_list %}
+				<option value="{{ l }}" {% if l == lecture_q %}selected{% endif %}>Lecture {{ l }}</option>
+			{% endfor %}
+		</select>
+		<input id='nonclick_rate' name='nonclick_rate' type='hidden' value="{{ nonclick_rate }}" />
+		<input id='search' value='Search' type='submit' />
+	</form>
+	<div id="vis" class="vis">
+		<script src="{{ STATIC_URL }}js/per_lecture.js"></script>
+	</div>
+	<div id="arrowpath"></div>
+	<div class='legend'></div>
+	<div id="slide" class="slide"></div>
+	<div class="bars">
+		<div class="throughput">Throughput</div>
+		<div id="graph_in" class="barchart"></div>
+		<div id="graph_out" class="barchart"></div>
+	</div>
+</div>
+{% endblock %}
