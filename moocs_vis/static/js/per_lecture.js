@@ -3,6 +3,8 @@ var width = 1280, height = 680;
     color = d3.scale.category20();
     normalOpacity = 0.2;
     lectureDict = {};
+    numSlides = -1;
+    maxStrength = 0;
 
 var svg, graph, percent, force, node, link;
     nodes = [], links = [];
@@ -37,6 +39,17 @@ $('#disp_week').click(function() {
   });
 });
 
+$( "#level_slider" ).labeledslider({
+  value: year,
+  min: 0,
+  max: 100,
+  step: 10,
+  slide: function( event, ui ) {
+    // year = ui.value;
+    // drawMap();
+  }
+});
+
 function reDraw(lecture) {
   svg   = d3.select("#vis")
                 .append("svg")
@@ -50,16 +63,24 @@ function reDraw(lecture) {
   nodes = graph.nodes;
   links = graph.links;
 
-  for(var i = 0; i < nodes.length; i++)
-  {
+  for(var i = 0; i < nodes.length; i++) {
+    var element = nodes[i];
+    if(element.order > numSlides) {
+      numSlides = element.order;
+    }
+  }
+  numSlides++;
+
+  for(var i = 0; i < links.length; i++) {
+    var element = links[i];
+    if(element.strength > maxStrength) {
+      maxStrength = element.strength;
+    }
+  }
+
+  for(var i = 0; i < nodes.length; i++) {
       var element = nodes[i];
-      if(element.group == 0)
-      {
-          element.x = width/2;
-          element.y = height/2;
-          element.fixed = true;
-      }
-      element.pos = [(width - 1500 / nodes.length) / nodes.length * i + 750 / nodes.length, arrowBone];
+      element.pos = [(width - 1500 / numSlides) / numSlides * element.order + 750 / numSlides, arrowBone + element.y * 150];
   }// build the arrow.
   svg.append("svg:defs").selectAll("marker")
       .data(["arrow"])//(["end"])      // Different link/path types can be defined here
@@ -119,7 +140,7 @@ function drawGraph(lecture) {
    // .insert("line", ".gnode")
       .attr("class", "link")
      .style("stroke", function(d) {
-        if(d.source > d.target) {
+        if(d.type == "BW") {
           return "crimson";
         }
         else {
@@ -127,7 +148,8 @@ function drawGraph(lecture) {
         }
       })
   // .style("stroke-dasharray" ,function(d) { if(d.target==0) return "10,10"; else return "";})
-   .style("stroke-width", function(d) { return d.strength/8 + 1; })
+   // .style("stroke-width", function(d) { return Math.log(d.strength) * 1 / Math.log(2) + 1; })
+   .style("stroke-width", function(d) { return d.strength * 80 / maxStrength + 1; })
   // .style("stroke-opacity", function(d) { return (d.lr/51)*0.1 + 0.5; });
   link.exit().remove();
 
@@ -136,20 +158,23 @@ function drawGraph(lecture) {
   node.enter().append("g").attr("class", "gnode").call(force.drag);
   node.append("circle")
       .attr("class", function(d) { return "node group" + d.type })
-      .attr("r", function(d) { return 300/nodes.length; }) // TODO
-      .style("fill", function(d) { if(d.type=='q') return "orange"; else if(d.type=='d') return "skyblue"; else return "beige" });
+      .attr("r", function(d) { return 300 / numSlides; })
+      .style("fill", function(d) { if(d.type=='q') return "orange"; else if(d.type=='d') return "skyblue"; else return "beige" })
+      .style("fill-opacity", function(d) { if(d.y==0) return 1; else return 0; })
+      .style("stroke", function(d) { if(d.y==0) return "black"; else return "none"; });
   node.append("text")
       .attr("text-anchor", "middle")
-      .attr("dy", "+" + 60 / nodes.length)
+      .attr("dy", "+" + 60 / numSlides)
       .text(function(d) { return d.slide; })
-      .attr("font-size", 150 / nodes.length + "px")
+      .attr("font-size", 150 / numSlides + "px")
       .attr("font-weight", "bold")
-      .style("fill", "black");
+      .style("fill", "black")
+      .style("fill-opacity", function(d) { if(d.y==0) return 1; else return 0; });
   // source or target properties match the hovered node.
   node.on('mouseover', function(d) {
     link.style('stroke-opacity', function(l) {
       if (d === l.source || d === l.target)
-        return 1;
+        return 0.9;
       else
         return normalOpacity;
     });
@@ -198,10 +223,10 @@ function drawThroughput(choice, hovered, upside, maxi) {
       height = 100 - margin.top - margin.bottom;
   
   var data = [];
-  for(i = 0; i < nodes.length; i++) {
+  for(i = 0; i < numSlides; i++) {
     var mynode = {};
     mynode['Slide'] = nodes[i].slide;
-    mynode['symbol'] = nodes[i].type + nodes[i].order;
+    mynode['symbol'] = nodes[i].type + (nodes[i].content_order);
     mynode[choice] = nodes[i][choice];
     data.push(mynode);
   }
@@ -306,9 +331,10 @@ function drawArrow(lecture) {
 function tick() {
   node.attr("transform", function(d) { return "translate(" + d.pos + ")";});
    link.attr("d", function(d) {
+    // TODO Compare condition of target?!
                 var dx = d.target.pos[0] - d.source.pos[0],
                     dy = d.target.pos[1] - d.source.pos[1],
-                    dr = Math.sqrt(dx * dx + dy * dy) * 0.7;
+                    dr = (d.target.name >= numSlides) ? 0 : Math.sqrt(dx * dx + dy * dy) * 0.7;
       return "M" +
                 d.source.pos[0] + "," +
                 d.source.pos[1] + "A" +

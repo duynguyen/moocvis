@@ -7,6 +7,7 @@
 <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
 <script src="http://d3js.org/d3.v3.js"></script>
 <script src="http://code.jquery.com/ui/1.10.4/jquery-ui.js"></script>
+<script src="{{ STATIC_URL }}js/jquery.ui.labeledslider.js"></script>
 <div class='container'>
 	<form id='#search_form' method='get'>
 		<select id='lecture_q' name='lecture_q'>
@@ -16,6 +17,7 @@
 		</select>
 		<input id='nonclick_rate' name='nonclick_rate' type='hidden' value="{{ nonclick_rate }}" />
 		<input id='search' value='Search' type='submit' />
+		<div id="level_slider" class="myslider"></div>
 	</form>
 	<div id="vis" class="vis">
 		<script src="{{ STATIC_URL }}js/per_lecture.js"></script>

@@ -1,10 +1,12 @@
-var width = 1280, height = 680;
-    arrowBone = 250;
-    color = d3.scale.category20();
-    normalOpacity = 0.2;
-    lectureDict = {};
-    numSlides = -1;
-    maxStrength = 0;
+var width = 1280, height = 680,
+    arrowBone = 250,
+    color = d3.scale.category20(),
+    normalOpacity = 0.2,
+    lectureDict = {},
+    numSlides = -1,
+    maxStrength = 0,
+    specLevel = 0;
+
 
 var svg, graph, percent, force, node, link;
     nodes = [], links = [];
@@ -39,13 +41,33 @@ $('#disp_week').click(function() {
   });
 });
 
+$( "#level_slider" ).labeledslider({
+  value: specLevel,
+  min: 0,
+  max: 100,
+  step: 5,
+  slide: function(event, ui) {
+    specLevel = ui.value;
+    var allLinks = $(".link");
+    $.each(allLinks, function(i, l) {
+      var strength = parseInt(l.getAttribute("data-strength"));
+      if(strength < specLevel) {
+        l.setAttribute("class", "link hidden");
+      } else {
+        l.setAttribute("class", "link");
+      }
+    });
+  }
+});
+
 function reDraw(lecture) {
-  svg   = d3.select("#vis")
-                .append("svg")
-                .attr("class", "vis")
-                .attr("width", width)
-                .attr("height", height)
-                .style("border","7px solid black");
+  $("#vis").html('');
+  svg = d3.select("#vis")
+          .append("svg")
+          .attr("class", "vis")
+          .attr("width", width)
+          .attr("height", height)
+          .style("border","7px solid black");
   
   percent = getPercent(lecture);
   graph = getGraph(lecture);
@@ -89,15 +111,14 @@ function reDraw(lecture) {
   link = svg.selectAll(".link");
 
   force = d3.layout.force()
-                       .charge(-400)
-                       .linkDistance(300)
-                       .size([width, height])
-                       .links(links)
-                       .nodes(nodes)
-                       .on("tick", tick);
+                   .charge(-400)
+                   .linkDistance(300)
+                   .size([width, height])
+                   .links(links)
+                   .nodes(nodes)
+                   .on("tick", tick);
 
-
-  drawGraph(lecture);
+  drawGraph();
   drawArrow();
 }
 
@@ -121,14 +142,15 @@ function getPercent(lecture)
 ////////////////////////////////////////////////////////////////
 // Function to draw topology, including nodes and links
 ///////////////////////////////////////////////////////////////
-function drawGraph(lecture) { 
+function drawGraph() { 
   link = link.data(force.links());
   link.enter()
       .append("path")
       .attr("marker-end", "url(#end)")
    // .insert("line", ".gnode")
       .attr("class", "link")
-     .style("stroke", function(d) {
+      .attr("data-strength", function(d) { return d.strength; })
+      .style("stroke", function(d) {
         if(d.type == "BW") {
           return "crimson";
         }
@@ -138,7 +160,12 @@ function drawGraph(lecture) {
       })
   // .style("stroke-dasharray" ,function(d) { if(d.target==0) return "10,10"; else return "";})
    // .style("stroke-width", function(d) { return Math.log(d.strength) * 1 / Math.log(2) + 1; })
-   .style("stroke-width", function(d) { return d.strength * 80 / maxStrength + 1; })
+      .style("stroke-width", function(d) {
+        if(d.strength < specLevel) {
+          return 0;
+        }
+        return d.strength * 80 / maxStrength + 1;
+      });
   // .style("stroke-opacity", function(d) { return (d.lr/51)*0.1 + 0.5; });
   link.exit().remove();
 
@@ -321,9 +348,9 @@ function tick() {
   node.attr("transform", function(d) { return "translate(" + d.pos + ")";});
    link.attr("d", function(d) {
     // TODO Compare condition of target?!
-                var dx = d.target.pos[0] - d.source.pos[0],
-                    dy = d.target.pos[1] - d.source.pos[1],
-                    dr = (d.target.name >= numSlides) ? 0 : Math.sqrt(dx * dx + dy * dy) * 0.7;
+      var dx = d.target.pos[0] - d.source.pos[0],
+          dy = d.target.pos[1] - d.source.pos[1],
+          dr = (d.target.name >= numSlides) ? 0 : Math.sqrt(dx * dx + dy * dy) * 0.7;
       return "M" +
                 d.source.pos[0] + "," +
                 d.source.pos[1] + "A" +
