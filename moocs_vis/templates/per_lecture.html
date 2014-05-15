@@ -17,8 +17,9 @@
 		</select>
 		<input id='nonclick_rate' name='nonclick_rate' type='hidden' value="{{ nonclick_rate }}" />
 		<input id='search' value='Search' type='submit' />
-		<div id="level_slider" class="myslider"></div>
 	</form>
+	<div id="level_slider" class="myslider"></div>
+	<label for="show_self">Show self-jump behaviors</label> <input type="checkbox" id="show_self" checked />
 	<div id="vis" class="vis">
 		<script src="{{ STATIC_URL }}js/per_lecture.js"></script>
 	</div>

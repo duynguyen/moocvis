@@ -335,11 +335,11 @@ def behaviors_by_user(eventing_user_id, lecture):
 		x_target = behavior.target.order
 		if behavior.event_type == "seeked":
 			before_group = 'v'
-			link_group = 'd'
+			link_group = behavior.seek_type
 			if i > 0 and deltas[i] - deltas[i - 1] < 10 and user_behaviors[i - 1].event_type == "seeked":
-				before_group = 'r'
-				link_group = 'r'
-				line_links[-1]['group'] = 'r'
+				before_group = 'c'
+				link_group = 'c'
+				line_links[-1]['group'] = 'c'
 			draw_node(circles, line_links, x_source, behavior.event_type, convertTime(deltas[i]), before_group)
 			draw_node(circles, line_links, x_target, 'dest', '', link_group)
 
@@ -390,11 +390,11 @@ def behaviors_by_user_slide(eventing_user_id, lecture):
 		x_target = behavior.target.slide.order
 		if behavior.event_type == "seeked":
 			before_group = 'v'
-			link_group = 'd'
+			link_group = behavior.seek_type
 			if i > 0 and deltas[i] - deltas[i - 1] < 10 and user_behaviors[i - 1].event_type == "seeked":
-				before_group = 'r'
-				link_group = 'r'
-				line_links[-1]['group'] = 'r'
+				before_group = 'c'
+				link_group = 'c'
+				line_links[-1]['group'] = 'c'
 			draw_node(circles, line_links, x_source, behavior.event_type, convertTime(deltas[i]), before_group)
 			draw_node(circles, line_links, x_target, 'dest', '', link_group)
 

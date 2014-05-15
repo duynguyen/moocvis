@@ -15,8 +15,6 @@ var tooltipDiv = d3.select("#compare-dialog").append("div")   // declare the pro
             .attr("class", "tooltip")       // apply the 'tooltip' class
             .style("opacity", 0);           // set the opacity to nil
 
-
-
 reDraw($("#lecture").val());
 $( "#lecture" ).change(function() {
   $("#vis").html('');
@@ -29,8 +27,8 @@ $('#disp_week').click(function() {
   $("#compare-dialog").html('');
   //TODO fix this hardcode
   tooltipDiv = d3.select("#compare-dialog").append("div")   // declare the properties for the div used for the tooltips
-            .attr("class", "tooltip")       // apply the 'tooltip' class
-            .style("opacity", 0);
+                 .attr("class", "tooltip")       // apply the 'tooltip' class
+                 .style("opacity", 0);
   drawThroughputGraph();
   drawGostraight();
   $( "#compare-dialog" ).dialog({
@@ -48,17 +46,26 @@ $( "#level_slider" ).labeledslider({
   step: 5,
   slide: function(event, ui) {
     specLevel = ui.value;
-    var allLinks = $(".link");
-    $.each(allLinks, function(i, l) {
-      var strength = parseInt(l.getAttribute("data-strength"));
-      if(strength < specLevel) {
-        l.setAttribute("class", "link hidden");
-      } else {
-        l.setAttribute("class", "link");
-      }
-    });
+    updateLink();
   }
 });
+
+$("#show_self").on("change", function() {
+  updateLink();
+});
+
+function updateLink() {
+  var allLinks = $(".link");
+  var show = $("#show_self");
+  $.each(allLinks, function(i, l) {
+    var strength = parseInt(l.getAttribute("data-strength"));
+    if(strength < specLevel || (!$("#show_self").is(':checked') && parseInt(l.getAttribute("data-targetname")) >= numSlides)) {
+      l.setAttribute("class", "link hidden");
+    } else {
+      l.setAttribute("class", "link");
+    }
+  });
+}
 
 function reDraw(lecture) {
   $("#vis").html('');
@@ -150,6 +157,7 @@ function drawGraph() {
    // .insert("line", ".gnode")
       .attr("class", "link")
       .attr("data-strength", function(d) { return d.strength; })
+      .attr("data-targetname", function(d) { return d.target; })
       .style("stroke", function(d) {
         if(d.type == "BW") {
           return "crimson";
@@ -346,17 +354,17 @@ function drawArrow(lecture) {
 
 function tick() {
   node.attr("transform", function(d) { return "translate(" + d.pos + ")";});
-   link.attr("d", function(d) {
+  link.attr("d", function(d) {
     // TODO Compare condition of target?!
-      var dx = d.target.pos[0] - d.source.pos[0],
-          dy = d.target.pos[1] - d.source.pos[1],
-          dr = (d.target.name >= numSlides) ? 0 : Math.sqrt(dx * dx + dy * dy) * 0.7;
-      return "M" +
-                d.source.pos[0] + "," +
-                d.source.pos[1] + "A" +
-                dr + "," + dr + " 0 0,1 " +
-                d.target.pos[0] + "," +
-                d.target.pos[1];
+    var dx = d.target.pos[0] - d.source.pos[0],
+        dy = d.target.pos[1] - d.source.pos[1],
+        dr = (d.target.name >= numSlides) ? 0 : Math.sqrt(dx * dx + dy * dy) * 0.7;
+    return "M" +
+              d.source.pos[0] + "," +
+              d.source.pos[1] + "A" +
+              dr + "," + dr + " 0 0,1 " +
+              d.target.pos[0] + "," +
+              d.target.pos[1];
    });
 }
 

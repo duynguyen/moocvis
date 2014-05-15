@@ -136,7 +136,7 @@ function drawGraph(lecture, user) {
             var pageX = d3.mouse(this)[0];
             var pageY = d3.mouse(this)[1];
             // $("#slide").html('<img src=slide_img/week' + lecture + '_' + d.slide + '.png />');
-            var additionalText = d.duration ? 'Pause in ' + d.duration + ' seconds'
+            var additionalText = d.type == 'pause' ? 'Pause in ' + d.duration + ' seconds'
             : (d.rate ? "Change rate: " + d.prev_rate + " ---> " + d.rate : '')
             tooltipDiv.transition()                                    // declare the transition properties to bring fade-in div
                     .duration(50)                                  // it shall take 200ms
@@ -157,8 +157,9 @@ function drawGraph(lecture, user) {
 
   svg.selectAll(".link_line").data(line_links).enter().append("path").attr("class", "link_line")
   .attr("fill", function(d) {
-      if(d.group == 'r') return 'red';
-      else if((d.group == 'd')) return 'green';
+      if(d.group == 'BW') return 'red';
+      else if((d.group == 'FW')) return 'green';
+      else if((d.group == 'c')) return 'cyan';
       else return 'orange';
   })
   .attr("fill-opacity", function(d) {
