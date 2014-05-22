@@ -5,7 +5,7 @@ from django.contrib import admin
 admin.autodiscover()
 
 from clickstream.views import current_date, hours_ahead
-from lectures.views import home, upload_slides, upload_clickstream, per_lecture, lecture_json, per_user, lecture_json_by_user
+from lectures.views import *
 
 # urlpatterns = patterns('',
 #     # Examples:
@@ -21,6 +21,8 @@ urlpatterns = patterns('',
     url(r'^date/$', current_date),
     url(r'^upload-slides/$', upload_slides),
     url(r'^upload-clickstream/$', upload_clickstream),
+    url(r'^map/$', geo_map),
+    url(r'^map/json/$', geo_map_json),
     url(r'^per-lecture/$', per_lecture),
     url(r'^per-lecture/lecture-json/$', lecture_json),
     url(r'^per-user/$', per_user),

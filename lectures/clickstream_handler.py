@@ -488,6 +488,43 @@ def top_pauses_playrate(lecture, k, rate):
 		results.append(u.eventing_user_id)
 	return results
 
+def map_json():
+	stats = {}
+	countries = User.objects.values('country_code').distinct()
+	for country in countries:
+		country = country['country_code']
+		num_users = User.objects.filter(country_code=country).distinct().count()
+		num_users_pauses = User.objects.filter(behavior__event_type='pause', country_code=country).distinct().count()
+		num_users_seeks = User.objects.filter(behavior__event_type='seeked', country_code=country).distinct().count()
+		num_users_seeks_fw = User.objects.filter(behavior__seek_type='FW', country_code=country).distinct().count()
+		num_users_seeks_bw = User.objects.filter(behavior__seek_type='BW', country_code=country).distinct().count()
+		num_users_ratechanges = User.objects.filter(behavior__event_type='ratechange', country_code=country).distinct().count()
+		num_pauses = Behavior.objects.filter(event_type="pause", user__country_code=country).count()
+		num_seeks = Behavior.objects.filter(event_type="seeked", user__country_code=country).count()
+		num_seeks_fw = Behavior.objects.filter(seek_type="FW", user__country_code=country).count()
+		num_seeks_bw = Behavior.objects.filter(seek_type="BW", user__country_code=country).count()
+		num_ratechanges = Behavior.objects.filter(event_type="ratechange", user__country_code=country).count()
+		# stats[country] = {
+		# 	"pauses": round(num_pauses * 100.0 / num_users, 2),
+		# 	"seeks": round(num_seeks * 100.0 / num_users, 2),
+		# 	"seeks_fw": round(num_seeks_fw * 100.0 / num_users, 2),
+		# 	"seeks_bw": round(num_seeks_bw * 100.0 / num_users, 2),
+		# 	"ratechanges": round(num_ratechanges * 100.0 / num_users, 2),
+		# 	"users": num_users,
+		# }
+		print country
+		print num_seeks_bw
+		print num_users_seeks_bw
+		stats[country] = {
+			"pauses": round(num_pauses * 100.0 / (num_users_pauses or 1), 2),
+			"seeks": round(num_seeks * 100.0 / (num_users_seeks or 1), 2),
+			"seeks_fw": round(num_seeks_fw * 100.0 / (num_users_seeks_fw or 1), 2),
+			"seeks_bw": round(num_seeks_bw * 100.0 / (num_users_seeks_bw or 1), 2),
+			"ratechanges": round(num_ratechanges * 100.0 / (num_users_ratechanges or 1), 2),
+			"users": num_users,
+		}
+	return stats
+
 def handle_slides_file(slides_f):
 	# get name
 	tokens = slides_f.name.split('.')[0].split('_')[0].split('-')

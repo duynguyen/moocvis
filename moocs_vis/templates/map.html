@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<meta charset="utf-8">
+<head>
+	<title>Visualization of MOOCs on world map</title>
+	<link href='https://api.tiles.mapbox.com/mapbox.js/v1.6.2/mapbox.css' rel='stylesheet' />
+	<!-- <link rel="stylesheet" href="jquery.ui.labeledslider.css"> -->
+	<link rel="stylesheet" href="//code.jquery.com/ui/1.10.4/themes/smoothness/jquery-ui.css">
+	<link href="http://netdna.bootstrapcdn.com/font-awesome/4.0.0/css/font-awesome.css" rel="stylesheet">
+    <link href="http://netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap.min.css" rel="stylesheet">
+	<link rel="stylesheet" href="{{ STATIC_URL }}css/map.css">
+</head>
+<body>
+<div id="map"></div>
+<div id="credits" class="bottom_boxes">
+    <div id="credits_box">
+        <div id="credits_content">
+        	<span class="help-block">
+				A MOOCs geo-visualization at <a href="http://cede.epfl.ch">CEDE Lab</a> at EPFL<br/><br/>
+				<a href="/">Back to home</a>
+				<img src="{{ STATIC_URL }}img/epfl_med.png" alt="EPFL"width="150" height="70">
+			</span>
+		</div>
+	</div>
+	<div id="toggle_credits" class="btn btn-inverse" type="button">Project Information</div>
+</div>
+<div id="dashboard" class="bottom_boxes">
+	<div id="dashboard_box" class="control">
+		<div id="dashboard_content">
+			<h5>Please choose an option</h5><br>
+			<!-- <div class="slider_zone">
+				<div id="slider_year" class="myslider"></div>
+				<div id="slider_month" class="myslider"></div>
+			</div> -->
+			<select id="option" class="form-control">
+				<option value="seeks">By seeks</option>
+				<option value="seeks_fw">By FW seeks</option>
+				<option value="seeks_bw">By BW seeks</option>
+				<option value="pauses">By pauses</option>
+				<option value="ratechanges">By ratechange</option>
+			</select>
+		</div>
+	</div>
+	<div id="toggle_dashboard" class="btn btn-inverse" type="button">Dashboard</div>
+</div>
+<!-- <div id="state_info" class="bottom_boxes"><span id="state_name">Uttar</span> <button id="state_info_btn" data-state="Gujarat">Display charts</button></div> -->
+<!-- <div id="chart_dialog"></div> -->
+<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
+<script src="http://code.jquery.com/ui/1.10.4/jquery-ui.js"></script>
+<script src='https://api.tiles.mapbox.com/mapbox.js/v1.6.2/mapbox.js'></script>
+<script src="http://netdna.bootstrapcdn.com/bootstrap/3.1.1/js/bootstrap.min.js"></script>
+<!-- <script src="jquery.ui.labeledslider.js"></script> -->
+<script type="text/javascript" src="{{ STATIC_URL }}js/data.js"></script>
+<script type="text/javascript" src="{{ STATIC_URL }}js/map.js"></script>
+</body>

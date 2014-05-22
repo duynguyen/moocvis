@@ -1,32 +1,11 @@
 from django.shortcuts import render, render_to_response
 from django.http import Http404, HttpResponse, HttpResponseRedirect
 from django.template import RequestContext
-from lectures.clickstream_handler import lecture_data, behaviors_by_user, behaviors_by_user_slide, top_seeks, top_pauses, top_seeks_playrate, top_pauses_playrate, top_ratechanges, handle_slides_file, handle_clickstream_file
+from lectures.clickstream_handler import *
 from lectures.forms import UploadFileForm
 from lectures.models import Lecture
 
 import json
-
-# Create your views here.
-# def upload_course(request):
-# 	if request.method == 'POST':
-# 		form = UploadFileForm(request.POST, request.FILES)
-# 		if form.is_valid():
-# 			handle_course_file(request.FILES['file'])
-# 			# return HttpResponse(request.FILES['file'])
-# 	else:
-# 		form = UploadFileForm()
-# 	return render_to_response('upload_course.html', {'form': form}, context_instance=RequestContext(request))
-
-# def upload_lecture(request):
-# 	if request.method == 'POST':
-# 		form = UploadFileForm(request.POST, request.FILES)
-# 		if form.is_valid():
-# 			handle_clickstream_file(request.FILES['file'])
-# 			# return HttpResponse(request.FILES['file'])
-# 	else:
-# 		form = UploadFileForm()
-# 	return render_to_response('upload_clickstream.html', {'form': form}, context_instance=RequestContext(request))
 
 def home(request):
 	return render_to_response('home.html', context_instance=RequestContext(request))
@@ -75,12 +54,14 @@ def per_user(request):
 	user = ''
 	seq = ''
 	indicator = ''
-	if 'lecture_q' in request.GET and 'user_q' in request.GET and 'seq_q' in request.GET:
+	if 'lecture_q' in request.GET:
 		lecture = request.GET['lecture_q']
+	if 'user_q' in request.GET:
 		user = request.GET['user_q']
+	if 'seq_q' in request.GET:
 		seq = request.GET['seq_q']
-		if 'indicator_q' in request.GET:
-			indicator = request.GET['indicator_q']
+	if 'indicator_q' in request.GET:
+		indicator = request.GET['indicator_q']
 
 	# indicators
 	not_much_jump = [
@@ -148,3 +129,9 @@ def lecture_json_by_user(request):
 		elif request.GET['seq'] == 'time_seq':
 			return HttpResponse(json.dumps(behaviors_by_user(user, lecture)), content_type="application/json")
 	return HttpResponse("Some error occurs!", content_type="application/json")
+
+def geo_map(request):
+	return render_to_response('map.html', context_instance=RequestContext(request))
+
+def geo_map_json(request):
+	return HttpResponse(json.dumps(map_json()), content_type="application/json")

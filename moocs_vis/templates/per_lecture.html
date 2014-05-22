@@ -9,27 +9,35 @@
 <script src="http://code.jquery.com/ui/1.10.4/jquery-ui.js"></script>
 <script src="{{ STATIC_URL }}js/jquery.ui.labeledslider.js"></script>
 <div class='container'>
-	<form id='#search_form' method='get'>
-		<select id='lecture_q' name='lecture_q'>
-			{% for l in lecture_list %}
-				<option value="{{ l }}" {% if l == lecture_q %}selected{% endif %}>Lecture {{ l }}</option>
-			{% endfor %}
-		</select>
-		<input id='nonclick_rate' name='nonclick_rate' type='hidden' value="{{ nonclick_rate }}" />
-		<input id='search' value='Search' type='submit' />
-	</form>
-	<div id="level_slider" class="myslider"></div>
-	<label for="show_self">Show self-jump behaviors</label> <input type="checkbox" id="show_self" checked />
-	<div id="vis" class="vis">
-		<script src="{{ STATIC_URL }}js/per_lecture.js"></script>
+	<div class="search_form">
+		<form id='#search_form' method='get'>
+			<select id='lecture_q' name='lecture_q'>
+				{% for l in lecture_list %}
+					<option value="{{ l }}" {% if l == lecture_q %}selected{% endif %}>Lecture {{ l }}</option>
+				{% endfor %}
+			</select>
+			<input id='nonclick_rate' name='nonclick_rate' type='hidden' value="{{ nonclick_rate }}" />
+			<input id='search' value='Search' type='submit' />
+		</form>
 	</div>
-	<div id="arrowpath"></div>
-	<div class='legend'></div>
-	<div id="slide" class="slide"></div>
-	<div class="bars">
-		<div class="throughput">Throughput</div>
-		<div id="graph_in" class="barchart"></div>
-		<div id="graph_out" class="barchart"></div>
+	<div class="slider">
+		Min connection strength to show:
+		<div id="level_slider" class="myslider"></div>
 	</div>
+	<div class="show_option">
+		<label for="show_self">Show self-jump behaviors</label> <input type="checkbox" id="show_self" checked />
+	</div>
+	<div class="visualization">
+		<div id="vis"></div>
+		<div id="arrowpath"></div>
+		<div class='legend'></div>
+		<div id="slide" class="slide"></div>
+		<div class="bars">
+			<div class="throughput">Throughput</div>
+			<div id="graph_in" class="barchart"></div>
+			<div id="graph_out" class="barchart"></div>
+		</div>
+	</div>
+	<script src="{{ STATIC_URL }}js/per_lecture.js"></script>
 </div>
 {% endblock %}
