@@ -6,9 +6,12 @@ class User(models.Model):
 	eventing_user_id = models.CharField(max_length=80)
 	country_code = models.CharField(max_length=4, null=True)
 	country_name = models.CharField(max_length=255, null=True)
+	grade = models.DecimalField(max_digits=5, decimal_places=2, null=True)
+	userclass = models.CharField(max_length=80, null=True)
+	achievement = models.CharField(max_length=80, null=True)
 
 	def most_active(self, week, week_order):
-		Seek.objects.filter(user = self)
+		Behavior.objects.filter(user = self)
 
 class Course(models.Model):
 	name = models.CharField(max_length=80)
@@ -68,29 +71,6 @@ class SlidePlay(models.Model):
 	def throughput_out(self):
 		# return len(Seek.objects.filter(~models.Q(target = self), source = self))
 		return len(Behavior.objects.filter(event_type = 'seeked', source = self))
-
-# class Seek(models.Model):
-# 	source = models.ForeignKey(SlidePlay, null=True, related_name='slide_source')
-# 	target = models.ForeignKey(SlidePlay, null=True, related_name='slide_target')
-# 	user = models.ForeignKey(User)
-# 	type = models.CharField(max_length=10)
-# 	pause_state = models.BooleanField()
-# 	playback_rate = models.DecimalField(max_digits=3, decimal_places=2)
-# 	init_time = models.DateTimeField()
-# 	event_time = models.DateTimeField()
-# 	source_time = models.IntegerField()
-# 	target_time = models.IntegerField()
-
-# class Pause(models.Model):
-# 	place = models.ForeignKey(SlidePlay, null=True)
-# 	user = models.ForeignKey(User)
-# 	pause_state = models.BooleanField()
-# 	play_end = models.BooleanField()
-# 	playback_rate = models.DecimalField(max_digits=3, decimal_places=2)
-# 	init_time = models.DateTimeField()
-# 	event_time = models.DateTimeField()
-# 	occur_time = models.IntegerField()
-# 	duration = models.IntegerField()
 
 class Behavior(models.Model):
 	source = models.ForeignKey(SlidePlay, null=True, related_name='slide_source')

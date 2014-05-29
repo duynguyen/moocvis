@@ -16,6 +16,18 @@
 					<option value="{{ l }}" {% if l == lecture_q %}selected{% endif %}>Lecture {{ l }}</option>
 				{% endfor %}
 			</select>
+			<select id='userclass_q' name='userclass_q'>
+				<option value="" {% if userclass = "" %}selected{% endif %}>All</option>
+				{% for c in userclass_list %}
+					<option value="{{ c }}" {% if c == userclass %}selected{% endif %}>{{ c }}</option>
+				{% endfor %}
+			</select>
+			<select id='achievement_q' name='achievement_q'>
+				<option value="" {% if achievement = "" %}selected{% endif %}>All</option>
+				{% for a in achievement_list %}
+					<option value="{{ a }}" {% if a == achievement %}selected{% endif %}>{{ a }}</option>
+				{% endfor %}
+			</select>
 			<input id='nonclick_rate' name='nonclick_rate' type='hidden' value="{{ nonclick_rate }}" />
 			<input id='search' value='Search' type='submit' />
 		</form>

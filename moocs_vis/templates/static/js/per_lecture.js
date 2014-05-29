@@ -6,7 +6,8 @@ var width = 1280, height = 680,
     numSlides = -1,
     maxStrength = 0,
     specLevel = 0;
-
+    stepSlider = 5;
+    maxSlider = 100;
 
 var svg, graph, percent, force, node, link;
     nodes = [], links = [];
@@ -39,11 +40,19 @@ $('#disp_week').click(function() {
   });
 });
 
+if (maxStrength / 10 < 1) {
+  stepSlider = 1;
+  maxSlider = maxStrength;
+} else if (maxStrength / 10 < 10 && maxStrength / 10 >= 1) {
+  stepSlider = parseInt(maxStrength / 10);
+  maxSlider = maxStrength;
+}
+
 $( "#level_slider" ).labeledslider({
   value: specLevel,
   min: 0,
-  max: 100,
-  step: 5,
+  max: maxSlider,
+  step: stepSlider,
   slide: function(event, ui) {
     specLevel = ui.value;
     updateLink();
@@ -133,7 +142,8 @@ function getGraph(lecture) {
   var graph;
   $.ajax({
     dataType: "json",
-    url: "lecture-json?lecture=" + $('#lecture_q').val(),
+    url: "lecture-json?lecture=" + $('#lecture_q').val() +
+        "&userclass=" + $('#userclass_q').val() + "&achievement=" + $('#achievement_q').val(),
     async: false,
     success: function(data){ graph = data; }
   });
@@ -169,7 +179,7 @@ function drawGraph() {
   // .style("stroke-dasharray" ,function(d) { if(d.target==0) return "10,10"; else return "";})
    // .style("stroke-width", function(d) { return Math.log(d.strength) * 1 / Math.log(2) + 1; })
       .style("stroke-width", function(d) {
-        if(d.strength < specLevel) {
+        if(d.strength == 0 || d.strength < specLevel) {
           return 0;
         }
         return d.strength * 80 / maxStrength + 1;
@@ -507,7 +517,8 @@ function drawThroughputGraph() {
               var endTime = parseInt(row.end_time);
               if(startTime / endVideo * 100 < relTime &&
                   endTime / endVideo * 100 >= relTime) {
-                $("#slide-dialog").html('<div class="slide-dialog" style="background:url(slide_img/week' + lectureId + '_' + row.type + row.id + '.png) no-repeat;background-size:contain;"></div>');
+                $("#slide-dialog").html(
+                  '<div class="slide-dialog" style="background:url(slide_img/week' + lectureId + '_' + row.type + row.id + '.png) no-repeat;background-size:contain;"></div>');
                 $("#slide-dialog").dialog({
                   minWidth: 1000,
                   height: 600,

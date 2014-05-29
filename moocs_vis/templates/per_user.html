@@ -20,102 +20,10 @@
 	<br>
 	Choose indicator:
 	<select id='select_indicator' name='indicator_q'>
-		<option value="top_seeks" {% if "top_seeks" == indicator_q %}selected{% endif %}>Top seeks</option>
-		<option value="top_seeks_playrate_125" {% if "top_seeks_playrate_125" == indicator_q %}selected{% endif %}>Top seeks with playback rate 1.25</option>
-		<option value="top_seeks_playrate_150" {% if "top_seeks_playrate_150" == indicator_q %}selected{% endif %}>Top seeks with playback rate 1.5</option>
-		<option value="top_pauses" {% if "top_pauses" == indicator_q %}selected{% endif %}>Top pauses</option>
-		<option value="top_pauses_playrate_125" {% if "top_pauses_playrate_125" == indicator_q %}selected{% endif %}>Top pauses with playback rate 1.25</option>
-		<option value="top_pauses_playrate_150" {% if "top_pauses_playrate_150" == indicator_q %}selected{% endif %}>Top pauses with playback rate 1.5</option>
-		<option value="not_much_jump" {% if "not_much_jump" == indicator_q %}selected{% endif %}>Not many jumps, greater number of clicks</option>
-		<option value="few_clicks" {% if "few_clicks" == indicator_q %}selected{% endif %}>Not many jumps, very few clicks</option>
-		<option value="low_prop_fw_bw" {% if "low_prop_fw_bw" == indicator_q %}selected{% endif %}>Low proportion of fw and bw clicks</option>
-		<option value="high_prop_fw_bw" {% if "high_prop_fw_bw" == indicator_q %}selected{% endif %}>High proportion of fw and bw clicks with scroll</option>
-		<option value="high_fw" {% if "high_fw" == indicator_q %}selected{% endif %}>High number of SeekFw and ScrollFw clicks</option>
-		<option value="high_bw" {% if "high_bw" == indicator_q %}selected{% endif %}>High number of SeekBw and ScrollBw clicks</option>
-		<option value="rate_changer" {% if "rate_changer" == indicator_q %}selected{% endif %}>Rate changers</option>
 	</select>
 	<input id='search' value='Search' type='submit' />
 </form>
-<!-- options below -->
-
-<div id='top_seeks' class='indicator_option invisible'>
-	{% for s in top_seeks %}
-		<a href="/per-user/?user_q={{ s }}&lecture_q={{ lecture_q }}&seq_q={{ seq_q }}&indicator_q=top_seeks" >{{ s }}</a>
-		<br/>
-	{% endfor %}
-</div>
-<div id='top_pauses' class='indicator_option invisible'>
-	{% for p in top_pauses %}
-		<a href="/per-user/?user_q={{ p }}&lecture_q={{ lecture_q }}&seq_q={{ seq_q }}&indicator_q=top_pauses" >{{ p }}</a>
-		<br/>
-	{% endfor %}
-</div>
-<div id='top_seeks_playrate_125' class='indicator_option invisible'>
-	{% for p in top_seeks_playrate_125 %}
-		<a href="/per-user/?user_q={{ p }}&lecture_q={{ lecture_q }}&seq_q={{ seq_q }}&indicator_q=top_seeks_playrate_125" >{{ p }}</a>
-		<br/>
-	{% endfor %}
-</div>
-<div id='top_seeks_playrate_150' class='indicator_option invisible'>
-	{% for p in top_seeks_playrate_150 %}
-		<a href="/per-user/?user_q={{ p }}&lecture_q={{ lecture_q }}&seq_q={{ seq_q }}&indicator_q=top_seeks_playrate_150" >{{ p }}</a>
-		<br/>
-	{% endfor %}
-</div>
-<div id='top_pauses_playrate_125' class='indicator_option invisible'>
-	{% for p in top_pauses_playrate_125 %}
-		<a href="/per-user/?user_q={{ p }}&lecture_q={{ lecture_q }}&seq_q={{ seq_q }}&indicator_q=top_pauses_playrate_125" >{{ p }}</a>
-		<br/>
-	{% endfor %}
-</div>
-<div id='top_pauses_playrate_150' class='indicator_option invisible'>
-	{% for p in top_pauses_playrate_150 %}
-		<a href="/per-user/?user_q={{ p }}&lecture_q={{ lecture_q }}&seq_q={{ seq_q }}&indicator_q=top_pauses_playrate_150" >{{ p }}</a>
-		<br/>
-	{% endfor %}
-</div>
-<div id='not_much_jump' class='indicator_option invisible'>
-	{% for p in not_much_jump %}
-		<a href="/per-user/?user_q={{ p }}&lecture_q={{ lecture_q }}&seq_q={{ seq_q }}&indicator_q=not_much_jump" >{{ p }}</a>
-		<br/>
-	{% endfor %}
-</div>
-<div id='few_clicks' class='indicator_option invisible'>
-	{% for p in few_clicks %}
-		<a href="/per-user/?user_q={{ p }}&lecture_q={{ lecture_q }}&seq_q={{ seq_q }}&indicator_q=few_clicks" >{{ p }}</a>
-		<br/>
-	{% endfor %}
-</div>
-<div id='low_prop_fw_bw' class='indicator_option invisible'>
-	{% for p in low_prop_fw_bw %}
-		<a href="/per-user/?user_q={{ p }}&lecture_q={{ lecture_q }}&seq_q={{ seq_q }}&indicator_q=low_prop_fw_bw" >{{ p }}</a>
-		<br/>
-	{% endfor %}
-</div>
-<div id='high_prop_fw_bw' class='indicator_option invisible'>
-	{% for p in high_prop_fw_bw %}
-		<a href="/per-user/?user_q={{ p }}&lecture_q={{ lecture_q }}&seq_q={{ seq_q }}&indicator_q=high_prop_fw_bw" >{{ p }}</a>
-		<br/>
-	{% endfor %}
-</div>
-<div id='high_fw' class='indicator_option invisible'>
-	{% for p in high_fw %}
-		<a href="/per-user/?user_q={{ p }}&lecture_q={{ lecture_q }}&seq_q={{ seq_q }}&indicator_q=high_fw" >{{ p }}</a>
-		<br/>
-	{% endfor %}
-</div>
-<div id='high_bw' class='indicator_option invisible'>
-	{% for p in high_bw %}
-		<a href="/per-user/?user_q={{ p }}&lecture_q={{ lecture_q }}&seq_q={{ seq_q }}&indicator_q=high_bw" >{{ p }}</a>
-		<br/>
-	{% endfor %}
-</div>
-<div id='rate_changer' class='indicator_option invisible'>
-	{% for p in rate_changer %}
-		<a href="/per-user/?user_q={{ p }}&lecture_q={{ lecture_q }}&seq_q={{ seq_q }}&indicator_q=rate_changer" >{{ p }}</a>
-		<br/>
-	{% endfor %}
-</div>
+<div id='indicator_option' class='indicator_option invisible'></div>
 <div id="vis">Please choose options to display</div>
 <script src="{{ STATIC_URL }}js/per_user.js"></script>
 </div>

@@ -4,24 +4,58 @@ var width = 1300,
 var radius = 15; /* radius of circles */
 var d3LineLinear = d3.svg.line().interpolate("linear");
 var d3color = d3.interpolateRgb("#BAE4B3", "#006D2C"); /* color range for flow lines */
-var node = [], force, graphLength = 0;
+var node = [], force, graphLength = 0, indicators;
 
 var graph;
 
 var lecture = $('#lecture_q').val();
 var user = $('#user_q').val();
 var seq;
-if($('input[name="seq_q"]:checked').length == 0) {
-  seq = 'time_seq';
-} else {
-  seq = $('input[name="seq_q"]:checked').val();
-}
+updateSeq();
 drawGraph(lecture, user);
+reloadIndicators(lecture);
+
+var keys = [];
+for(var k in indicators) {
+  $("#select_indicator").append("<option value='" + k + "'>" + k + "</option>");
+}
+
+$('#lecture_q').on('change', function() {
+  lecture = $(this).val();
+  reloadIndicators(lecture);
+  updateUserList();
+});
 
 $('#select_indicator').on('change', function() {
-  $('.indicator_option').addClass('invisible');
-  $('#' + $(this).val()).removeClass('invisible');
+  updateUserList();
+  $('#indicator_option').removeClass('invisible');
 });
+
+function reloadIndicators(lecture) {
+  $.ajax({
+    dataType: "json",
+    url: "/indicators/json/?lecture=" + lecture,
+    async: false,
+    success: function(data){ indicators = data; }
+  });
+}
+
+function updateSeq() {
+  if($('input[name="seq_q"]:checked').length == 0) {
+    seq = 'time_seq';
+  } else {
+    seq = $('input[name="seq_q"]:checked').val();
+  }
+}
+
+function updateUserList() {
+  $('#indicator_option').html('');
+  updateSeq();
+  var userList = indicators[$("#select_indicator").val()];
+  $.each(userList, function(i, d) {
+    $('#indicator_option').append("<a href='/per-user/?lecture_q=" + lecture + "&seq_q=" + seq + "&user_q=" + d + "'>" + d + "</a><br>");
+  });
+}
 
 function drawGraph(lecture, user) {
 

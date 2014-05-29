@@ -31,7 +31,17 @@
 				<div id="slider_year" class="myslider"></div>
 				<div id="slider_month" class="myslider"></div>
 			</div> -->
-			<select id="option" class="form-control">
+			<select id='lecture_option' class="form-control" style="margin-bottom:20px;">
+				<option value='all'>All lectures</option>
+				{% for l in lectures %}
+					<option value="{{ l }}">Lecture {{ l }}</option>
+				{% endfor %}
+			</select>
+			<select id="method_option" class="form-control" style="margin-bottom:20px;">
+				<option value="behaviorbased">Num. behaviors / Behaving users</option>
+				<option value="userbased">Behaving users / All users</option>
+			</select>
+			<select id="behavior_option" class="form-control">
 				<option value="seeks">By seeks</option>
 				<option value="seeks_fw">By FW seeks</option>
 				<option value="seeks_bw">By BW seeks</option>

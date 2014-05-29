@@ -1,8 +1,14 @@
 var colorScale = ['#FFFFFF', '#FFEDA0', '#FEB24C', '#FD8D3C', '#FC4E2A', '#E31A1C', '#BD0026', '#800026'];
 var valueScale = [10, 20, 50, 100, 200, 500, 1000];
-var percentScale = [0, 0.5, 1, 2, 3, 5, 10];
+var percentScale = {
+	'behaviorbased' : [0, 5, 6, 7, 8, 10, 15],
+	// 'userbased' : [0, 0.5, 1, 2, 3, 5, 10],
+	'userbased' : [0, 30, 40, 50, 60, 70, 80],
+};
 var defaultColor = 'grey';
-var option = 'seeks';
+var behavior_option = 'seeks';
+var method_option = 'behaviorbased';
+var lecture = 'all';
 var map, geojson, info, options, highlighted, statenameVisible = false, year = 1980, month = 1;
 // map = L.map('map').setView([22, 83], 4.7);
 map = L.mapbox.map('map', 'examples.map-zgrqqx0w').setView([0, 0], 1);
@@ -40,9 +46,15 @@ info.onAdd = function (map) {
 };
 
 info.update = function (feature) {
-	this._div.innerHTML = '<h4>' + option + '</h4>' +  (feature ?
-		'<b>' + feature.properties.name + '</b><br />' + (getProp(feature.id) > 0 ? getProp(feature.id) : 0) + '% of learners making ' + option +
-		'<br />Total learners: ' + (stats[feature.id] ? stats[feature.id].users : 'N/A')
+	var measure = ' behaviors / user, behaviors = '
+	if(method_option == 'userbased') {
+		measure = ' % of learners making ';
+	}
+	this._div.innerHTML = '<h4>' + method_option + ' ' + behavior_option + '</h4>' +  (feature ?
+		'<b>' + feature.properties.name + '</b><br />' +
+		(getProp(feature.id) > 0 ? getProp(feature.id) : 0) + measure + behavior_option +
+		'<br>num_users_' + behavior_option + ': ' + (stats[lecture][method_option][feature.id] ? stats[lecture][method_option][feature.id]['num_users_' + behavior_option] : 'N/A') +
+		'<br />Total learners: ' + (stats[lecture][method_option][feature.id] ? stats[lecture][method_option][feature.id].users : 'N/A')
 		: 'Hover over a state');
 };
 
@@ -78,8 +90,20 @@ $('#toggle_dashboard').click(function(){
 		}
 });
 
-$("#option").on("change", function() {
-	option = $(this).val();
+$("#lecture_option").on("change", function() {
+	lecture = $(this).val();
+	updateOptions();
+	drawMap();
+});
+
+$("#behavior_option").on("change", function() {
+	updateOptions();
+	drawMap();
+});
+
+$("#method_option").on("change", function() {
+	updateOptions();
+	addLegendPercent(map);
 	drawMap();
 });
 
@@ -132,6 +156,11 @@ $("#option").on("change", function() {
 //     });
 // });
 
+function updateOptions() {
+	method_option = $("#method_option").val();
+	behavior_option = $("#behavior_option").val();
+}
+
 function drawMap() {
 	highlighted = null;
 	if(geojson) {
@@ -159,8 +188,8 @@ function drawMap() {
 function getColor(d) {
 	if(d == -1) return defaultColor;
 	if(d == 0) return colorScale[0];
-	for(i = percentScale.length; i >= 0; i--) {
-		if(d > percentScale[i]) {
+	for(i = percentScale[method_option].length; i >= 0; i--) {
+		if(d > percentScale[method_option][i]) {
 			return colorScale[i + 1];
 		}
 	}
@@ -178,9 +207,9 @@ function stateStyle(feature) {
 }
 
 function getProp(id) {
-	if(stats[id]) {
-		if(stats[id].users == 0) return -1;
-		return stats[id][option];
+	if(stats[lecture][method_option][id]) {
+		if(stats[lecture][method_option][id].users == 0) return -1;
+		return stats[lecture][method_option][id][behavior_option];
 	} else {
 		return -1;
 	}
@@ -288,6 +317,7 @@ function detailToPoint(e) {
 }
 
 function addLegendPercent(map) {
+	$(".info.legend").remove();
 	var legend = L.control({position: 'bottomright'});
 
 	legend.onAdd = function (map) {
@@ -295,17 +325,16 @@ function addLegendPercent(map) {
 		var div = L.DomUtil.create('div', 'info legend'),
 			labels = [],
 			from, to;
-
-		labels.push("Percent (%)");
+		labels.push(method_option == "userbased" ? "Behaving users (%)" : "Behaviors / users");
 		labels.push(
 				'<i style="background:' + defaultColor + '"></i> No learner');
 
 		labels.push(
 				'<i style="background:' + getColor(0) + '"></i> 0');
 
-		for (var i = 0; i < percentScale.length; i++) {
-			from = percentScale[i];
-			to = percentScale[i + 1];
+		for (var i = 0; i < percentScale[method_option].length; i++) {
+			from = percentScale[method_option][i];
+			to = percentScale[method_option][i + 1];
 
 			labels.push(
 				'<i style="background:' + getColor(from + 0.1) + '"></i> ' +
@@ -315,7 +344,6 @@ function addLegendPercent(map) {
 		div.innerHTML = labels.join('<br>');
 		return div;
 	};
-
 	legend.addTo(map);
 }
 

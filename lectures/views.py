@@ -36,14 +36,28 @@ def per_lecture(request):
 	for lecture in lectures:
 		lecture_list.append(str(lecture.week) + '-' + str(lecture.week_order))
 	lecture = ''
+	userclass = ''
+	achievement = ''
 	nonclick_rate = 0
-	if 'lecture_q' in request.GET:
-		lecture = request.GET['lecture_q']
+	userclass_list = ['active', 'viewers', 'inactive']
+	achievement_list = ['distinction', 'normal', 'none']
+	userclass = request.GET.get('userclass_q', '')
+	achievement = request.GET.get('achievement_q', '')
+	lecture = request.GET.get('lecture_q', '')
+	if lecture:
 		tokens = lecture.split('-')
 		nonclick_rates = Lecture.objects.filter(week = int(tokens[0]), week_order = int(tokens[1]))
 		if len(nonclick_rates) > 0:
 			nonclick_rate = nonclick_rates[0].nonclick_rate
-	return render_to_response('per_lecture.html', {'nonclick_rate': nonclick_rate, 'lecture_q': lecture, 'lecture_list': lecture_list}, context_instance=RequestContext(request))
+	return render_to_response('per_lecture.html', {
+		'nonclick_rate': nonclick_rate,
+		'lecture_q': lecture,
+		'lecture_list': lecture_list,
+		'userclass': userclass,
+		'userclass_list': userclass_list,
+		'achievement': achievement,
+		'achievement_list': achievement_list,
+		}, context_instance=RequestContext(request))
 
 def per_user(request):
 	lectures = Lecture.objects.filter(slides_imported = True).order_by("week", "week_order")
@@ -63,7 +77,15 @@ def per_user(request):
 	if 'indicator_q' in request.GET:
 		indicator = request.GET['indicator_q']
 
-	# indicators
+	return render_to_response('per_user.html', {'lecture_list': lecture_list, 'lecture_q': lecture, 'user_q': user, 'seq_q': seq, 'indicator_q': indicator},
+		# },
+		context_instance=RequestContext(request))
+
+def indicators_json(request):
+	lecture = request.GET.get('lecture', '')
+	if not lecture:
+		return HttpResponse("No lecture chosen!", content_type="application/json")
+
 	not_much_jump = [
 		'2cb1b1ce76e8055cf4fa10d7c4f4223ccb1a3e6c',
 		'0734a1493fc249a3c82688db10b562ea9b7d4025',
@@ -98,25 +120,24 @@ def per_user(request):
 		'9412d6093b3534d5e61f81d13ff0bc85ba5d4ee9',
 		'72ef39cdc7803863c919ead70be79bd908a2a841',
 	]
-	rate_changer = [
-		'ee7104602f171e3982cf313958edfeb0ec6e58d1',
-		'a296da3018f0d7ea1d2d19a421df2eef1157f6b8',
-		'8db5c7e9e37423cee6111d5a85919b1d2c3bea44',
-	]
-	return render_to_response('per_user.html', {'lecture_list': lecture_list, 'lecture_q': lecture, 'user_q': user, 'seq_q': seq, 'indicator_q': indicator,
+
+	response_data = {
 		'top_seeks': top_seeks(lecture, 10), 'top_pauses': top_pauses(lecture, 10),
 		'not_much_jump': not_much_jump, 'few_clicks': few_clicks,
 		'low_prop_fw_bw': low_prop_fw_bw, 'high_prop_fw_bw': high_prop_fw_bw,
 		'high_fw': high_fw, 'high_bw': high_bw, 'rate_changer': top_ratechanges(lecture, 10),
 		'top_pauses_playrate_125': top_pauses_playrate(lecture, 10, 1.25), 'top_pauses_playrate_150': top_pauses_playrate(lecture, 10, 1.5),
-		'top_seeks_playrate_125': top_seeks_playrate(lecture, 10, 1.25), 'top_seeks_playrate_150': top_seeks_playrate(lecture, 10, 1.5)},
-		# },
-		context_instance=RequestContext(request))
+		'top_seeks_playrate_125': top_seeks_playrate(lecture, 10, 1.25), 'top_seeks_playrate_150': top_seeks_playrate(lecture, 10, 1.5)
+	}
+
+	return HttpResponse(json.dumps(response_data), content_type="application/json")
 
 def lecture_json(request):
-	if 'lecture' in request.GET:
-		lecture = request.GET['lecture']
-		response_data = lecture_data(lecture)
+	userclass = request.GET.get('userclass', '')
+	achievement = request.GET.get('achievement', '')
+	lecture = request.GET.get('lecture', '')
+	response_data = lecture_data(lecture, userclass, achievement)
+	if response_data:
 		return HttpResponse(json.dumps(response_data), content_type="application/json")
 	return HttpResponse("Some error occurs!", content_type="application/json")
 
@@ -131,7 +152,11 @@ def lecture_json_by_user(request):
 	return HttpResponse("Some error occurs!", content_type="application/json")
 
 def geo_map(request):
-	return render_to_response('map.html', context_instance=RequestContext(request))
+	lectures = Lecture.objects.filter(slides_imported = True).order_by("week", "week_order")
+	lecture_list = []
+	for lecture in lectures:
+		lecture_list.append(str(lecture.week) + '-' + str(lecture.week_order))
+	return render_to_response('map.html', { 'lectures' : lecture_list }, context_instance=RequestContext(request))
 
 def geo_map_json(request):
 	return HttpResponse(json.dumps(map_json()), content_type="application/json")
