@@ -5,12 +5,14 @@
     <link rel="stylesheet" href="//code.jquery.com/ui/1.10.4/themes/smoothness/jquery-ui.css">
     <link rel="stylesheet" href="{{ STATIC_URL }}css/jquery.ui.labeledslider.css">
     <link rel="stylesheet" href="{{ STATIC_URL }}css/base.css" />
+    <link href="http://netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap.min.css" rel="stylesheet">
 </head>
 <body>
     <h1>MOOCs clickstream visualization project</h1>
 	{% include "nav.html" %}
     {% block content %}{% endblock %}
     {% block footer %}
+    <div class="clear_both"></div>
     <hr>
     <p>CEDE Lab. EPFL.</p>
     {% endblock %}

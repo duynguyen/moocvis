@@ -12,13 +12,27 @@ var lecture = $('#lecture_q').val();
 var user = $('#user_q').val();
 var seq;
 updateSeq();
-drawGraph(lecture, user);
 reloadIndicators(lecture);
-
 var keys = [];
-for(var k in indicators) {
+
+// init value
+$('input[name="playrate_q"]:first').attr('checked', 'checked');
+$('input[name="playrate_q"]:first').parent().toggleClass("success");
+
+$.each(indicators.indicators, function(i, k) {
   $("#select_indicator").append("<option value='" + k + "'>" + k + "</option>");
-}
+});
+
+drawGraph(lecture, user);
+
+$(".toggle-btn input[type=radio]").change(function() {
+    if($(this).attr("name")) {
+        $(this).parent().addClass("success").siblings().removeClass("success")
+    } else {
+        $(this).parent().toggleClass("success");
+    }
+    updateUserList();
+});
 
 $('#lecture_q').on('change', function() {
   lecture = $(this).val();
@@ -29,6 +43,10 @@ $('#lecture_q').on('change', function() {
 $('#select_indicator').on('change', function() {
   updateUserList();
   $('#indicator_option').removeClass('invisible');
+});
+
+$("#toggle_legend").click(function() {
+  $("#legend_img").slideToggle("slow");
 });
 
 function reloadIndicators(lecture) {
@@ -51,9 +69,11 @@ function updateSeq() {
 function updateUserList() {
   $('#indicator_option').html('');
   updateSeq();
-  var userList = indicators[$("#select_indicator").val()];
+  var playrate = $('input[name="playrate_q"]:checked').val();
+  var userList = indicators[$("#select_indicator").val() + '-' + playrate];
   $.each(userList, function(i, d) {
-    $('#indicator_option').append("<a href='/per-user/?lecture_q=" + lecture + "&seq_q=" + seq + "&user_q=" + d + "'>" + d + "</a><br>");
+    $('#indicator_option').append("<a href='/per-user/?lecture_q=" + lecture + "&seq_q=" + seq +
+      "&user_q=" + d + "&playrate_q=" + playrate + "'>" + d + "</a><br>");
   });
 }
 
@@ -193,11 +213,12 @@ function drawGraph(lecture, user) {
   .attr("fill", function(d) {
       if(d.group == 'BW') return 'red';
       else if((d.group == 'FW')) return 'green';
-      else if((d.group == 'c')) return 'cyan';
-      else return 'orange';
+      else if((d.group == 'cBW')) return '#fa8072';
+      else if((d.group == 'cFW')) return '#7fff00';
+      else return '#000';
   })
   .attr("fill-opacity", function(d) {
-      if(d.group == 'v') return 0.4;
+      if(d.group == 'v' || d.group == 'cBW' || d.group == 'cFW') return 0.7;
   })
   .attr("id", function(i, d) {
       return "link_line" + d;

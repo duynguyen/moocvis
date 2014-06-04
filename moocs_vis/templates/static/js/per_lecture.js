@@ -6,8 +6,9 @@ var width = 1280, height = 680,
     numSlides = -1,
     maxStrength = 0,
     specLevel = 0;
-    stepSlider = 5;
-    maxSlider = 100;
+    stepSlider = 0.0005;
+    maxSlider = 0.01;
+    maxThroughput = 0;
 
 var svg, graph, percent, force, node, link;
     nodes = [], links = [];
@@ -16,17 +17,32 @@ var tooltipDiv = d3.select("#compare-dialog").append("div")   // declare the pro
             .attr("class", "tooltip")       // apply the 'tooltip' class
             .style("opacity", 0);           // set the opacity to nil
 
-reDraw($("#lecture").val());
-$( "#lecture" ).change(function() {
-  $("#vis").html('');
-  reDraw($(this).val());
-});
+
+var results;
+
+if(parseInt($("input[name=nonclick_rate]").val()) > 0) {
+  results = getGraph($("#lecture_q").val());
+  reDraw($("#lecture_q").val());
+}
+
+// $( "#lecture_q" ).change(function() {
+//   $("#vis").html('');
+//   reDraw($(this).val());
+// });
 
 // drawGostraight();
 
+$(".toggle-btn input[type=radio]").change(function() {
+    if($(this).attr("name")) {
+        $(this).parent().addClass("success").siblings().removeClass("success")
+    } else {
+        $(this).parent().toggleClass("success");
+    }
+    reDraw($("#lecture_q").val());
+});
+
 $('#disp_week').click(function() {
   $("#compare-dialog").html('');
-  //TODO fix this hardcode
   tooltipDiv = d3.select("#compare-dialog").append("div")   // declare the properties for the div used for the tooltips
                  .attr("class", "tooltip")       // apply the 'tooltip' class
                  .style("opacity", 0);
@@ -40,34 +56,19 @@ $('#disp_week').click(function() {
   });
 });
 
-if (maxStrength / 10 < 1) {
-  stepSlider = 1;
-  maxSlider = maxStrength;
-} else if (maxStrength / 10 < 10 && maxStrength / 10 >= 1) {
-  stepSlider = parseInt(maxStrength / 10);
-  maxSlider = maxStrength;
-}
-
-$( "#level_slider" ).labeledslider({
-  value: specLevel,
-  min: 0,
-  max: maxSlider,
-  step: stepSlider,
-  slide: function(event, ui) {
-    specLevel = ui.value;
-    updateLink();
-  }
-});
-
 $("#show_self").on("change", function() {
   updateLink();
+});
+
+$("#toggle_legend").click(function() {
+  $("#legend_img").slideToggle("slow");
 });
 
 function updateLink() {
   var allLinks = $(".link");
   var show = $("#show_self");
   $.each(allLinks, function(i, l) {
-    var strength = parseInt(l.getAttribute("data-strength"));
+    var strength = parseFloat(l.getAttribute("data-strength"));
     if(strength < specLevel || (!$("#show_self").is(':checked') && parseInt(l.getAttribute("data-targetname")) >= numSlides)) {
       l.setAttribute("class", "link hidden");
     } else {
@@ -77,18 +78,21 @@ function updateLink() {
 }
 
 function reDraw(lecture) {
+  numSlides = -1;
+  maxStrength = 0;
+  stepSlider = 0.0005;
+  maxSlider = 0.01;
+  maxThroughput = 0;
+
   $("#vis").html('');
-  svg = d3.select("#vis")
-          .append("svg")
-          .attr("class", "vis")
-          .attr("width", width)
-          .attr("height", height)
-          .style("border","7px solid black");
   
+  var userclass = $('input[name="userclass_q"]:checked').val(),
+      achievement = $('input[name="achievement_q"]:checked').val();
+
   percent = getPercent(lecture);
-  graph = getGraph(lecture);
-  nodes = graph.nodes;
-  links = graph.links;
+  graph = jQuery.extend(true, {}, results[userclass + '-' + achievement]);
+  nodes = graph['nodes'];
+  links = graph['links'];
 
   for(var i = 0; i < nodes.length; i++) {
     var element = nodes[i];
@@ -107,25 +111,32 @@ function reDraw(lecture) {
 
   for(var i = 0; i < nodes.length; i++) {
       var element = nodes[i];
-      element.pos = [(width - 1500 / numSlides) / numSlides * element.order + 750 / numSlides, arrowBone + element.y * 150];
-  }// build the arrow.
-  svg.append("svg:defs").selectAll("marker")
-      .data(["arrow"])//(["end"])      // Different link/path types can be defined here
-    .enter().append("svg:marker")    // This section adds in the arrows
-      .attr("id", String)
-      .attr("viewBox", "0 -5 10 10")
-      .attr("refX", 16)
-      .attr("refY",-1.5)
-      .attr("markerWidth", 5)
-      .attr("markerHeight", 5)
-      .attr("orient", "auto")
-    .append("svg:path")
-      // .attr("marker-end", "url(#arrow)")
-      .attr("d", "M0,-5L10,-2L0,5");
+      element.pos = [(width - 1500 / numSlides) / numSlides * element.order + 750 / numSlides, arrowBone + element.y * 200];
+      if(element.in + element.out + element.incl > maxThroughput) {
+        maxThroughput = element.in + element.out + element.incl;
+      }
+  }
 
-  node = svg.selectAll(".node"),
-  link = svg.selectAll(".link");
+  if (maxStrength / 10 < 0.0001) {
+    stepSlider = 0.0001;
+    maxSlider = maxStrength;
+  } else if (maxStrength / 10 < 0.001 && maxStrength / 10 >= 0.0001) {
+    stepSlider = parseFloat(maxStrength / 10);
+    maxSlider = maxStrength;
+  }
 
+  $( "#level_slider" ).labeledslider({
+    value: parseInt(specLevel * 10000),
+    min: 0,
+    max: parseInt(maxSlider * 10000),
+    step: parseInt(stepSlider * 10000),
+    slide: function(event, ui) {
+      specLevel = ui.value / 10000.0;
+      updateLink();
+    }
+  });
+
+  force = null;
   force = d3.layout.force()
                    .charge(-400)
                    .linkDistance(300)
@@ -134,24 +145,33 @@ function reDraw(lecture) {
                    .nodes(nodes)
                    .on("tick", tick);
 
+  svg = null;
+  svg = d3.select("#vis")
+          .append("svg")
+          .attr("class", "vis")
+          .attr("width", width)
+          .attr("height", height);
+
+  node = svg.selectAll(".node"),
+  link = svg.selectAll(".link");
+
   drawGraph();
   drawArrow();
+  updateLink();
 }
 
 function getGraph(lecture) {
   var graph;
   $.ajax({
     dataType: "json",
-    url: "lecture-json?lecture=" + $('#lecture_q').val() +
-        "&userclass=" + $('#userclass_q').val() + "&achievement=" + $('#achievement_q').val(),
+    url: "lecture-json?lecture=" + $('#lecture_q').val(),
     async: false,
     success: function(data){ graph = data; }
   });
   return graph;
 }
 
-function getPercent(lecture)  
-{
+function getPercent(lecture) {
   percent = $('#nonclick_rate').val();
   return percent;
 }
@@ -159,11 +179,11 @@ function getPercent(lecture)
 ////////////////////////////////////////////////////////////////
 // Function to draw topology, including nodes and links
 ///////////////////////////////////////////////////////////////
-function drawGraph() { 
+function drawGraph() {
   link = link.data(force.links());
   link.enter()
       .append("path")
-      .attr("marker-end", "url(#end)")
+      // .attr("marker-end", "url(#end)")
    // .insert("line", ".gnode")
       .attr("class", "link")
       .attr("data-strength", function(d) { return d.strength; })
@@ -179,7 +199,7 @@ function drawGraph() {
   // .style("stroke-dasharray" ,function(d) { if(d.target==0) return "10,10"; else return "";})
    // .style("stroke-width", function(d) { return Math.log(d.strength) * 1 / Math.log(2) + 1; })
       .style("stroke-width", function(d) {
-        if(d.strength == 0 || d.strength < specLevel) {
+        if(d.strength == 0) {
           return 0;
         }
         return d.strength * 80 / maxStrength + 1;
@@ -192,15 +212,44 @@ function drawGraph() {
   node.enter().append("g").attr("class", "gnode").call(force.drag);
   node.append("circle")
       .attr("class", function(d) { return "node group" + d.type })
-      .attr("r", function(d) { return 300 / numSlides; })
+      .attr("r", function(d) {
+        var maxR = 600.0 / numSlides;
+        var minR = 100.0 / numSlides;
+        var thisR = (d.in + d.out + d.incl) / maxThroughput * 600.0 / numSlides;
+        if (thisR > maxR) {
+          return maxR;
+        }
+        if (thisR < minR) {
+          return minR;
+        }
+        return thisR;
+      })
       .style("fill", function(d) { if(d.type=='q') return "orange"; else if(d.type=='d') return "skyblue"; else return "beige" })
       .style("fill-opacity", function(d) { if(d.y==0) return 1; else return 0; })
       .style("stroke", function(d) { if(d.y==0) return "black"; else return "none"; });
   node.append("text")
       .attr("text-anchor", "middle")
       .attr("dy", "+" + 60 / numSlides)
-      .text(function(d) { return d.slide; })
-      .attr("font-size", 150 / numSlides + "px")
+      .text(function(d) {
+        return d.type + d.content_order;
+        // var minR = 300.0 / numSlides;
+        // var thisR = (d.in + d.out) / maxThroughput * 600.0 / numSlides;
+        // if (thisR < minR) {
+        //   return d.type + d.content_order;
+        // }
+        // return d.slide;
+      })
+      .attr("font-size", function(d) {
+        var maxR = 400.0 / numSlides;
+        var minR = 150.0 / numSlides;
+        var thisR = (d.in + d.out + d.incl) / maxThroughput * 400.0 / numSlides;
+        if (thisR > maxR) {
+          return maxR + "px";
+        }
+        if (thisR < minR) {
+          return minR + "px";
+        }
+      })
       .attr("font-weight", "bold")
       .style("fill", "black")
       .style("fill-opacity", function(d) { if(d.y==0) return 1; else return 0; });
@@ -213,7 +262,9 @@ function drawGraph() {
         return normalOpacity;
     });
     $("#slide").html('<img src="' + d.url + '" />');
-    // $("#slide").removeClass('hidden');
+    $("#slide_name").html("<span style='color:red;text-decoration:underline;font-size:20px;'>" + d.slide + "</span><br>total = "
+      + round(d.in + d.out + d.incl, 5) + " / user<br>in = " + round(d.in, 5) + " / user<br>out = "
+      + round(d.out, 5) + " / user<br>internal = " + round(d.incl, 5) + " / user");
     var nodeData = [{orient: 'in', strength: d.in}, {orient: 'out', strength: d.out}];
     // $("#throughtput").html(d.slide);
     var maxi1 = d3.max(getThroughput('in'), function(d) { return d['in']; });
@@ -229,6 +280,7 @@ function drawGraph() {
     link.style('stroke-opacity', normalOpacity);
     // $("#slide").addClass('hidden');
     $("#slide").html('');
+    $("#slide_name").html('');
     // $("#pie").addClass('hidden');
     $("#graph_in").html('');
     $("#graph_out").html('');
@@ -252,7 +304,7 @@ function getThroughput(choice) {
 
 function drawThroughput(choice, hovered, upside, maxi) {
   //TODO: scale by max
-  var margin = {top: 10, right: 10, bottom: 10, left: 40},
+  var margin = {top: 10, right: 10, bottom: 10, left: 50},
       width = 590 - margin.left - margin.right,
       height = 100 - margin.top - margin.bottom;
   
@@ -368,7 +420,7 @@ function tick() {
     // TODO Compare condition of target?!
     var dx = d.target.pos[0] - d.source.pos[0],
         dy = d.target.pos[1] - d.source.pos[1],
-        dr = (d.target.name >= numSlides) ? 0 : Math.sqrt(dx * dx + dy * dy) * 0.7;
+        dr = (d.target.name >= numSlides) ? 0 : Math.sqrt(dx * dx + dy * dy) * 0.8;
     return "M" +
               d.source.pos[0] + "," +
               d.source.pos[1] + "A" +
@@ -619,4 +671,8 @@ function drawGostraight() {
     .attr("text-anchor", "middle")
     .attr('class', 'name')
     .text(function(d) { return "Lecture " + d });
+}
+
+function round(value, decimals) {
+    return Number(Math.round(value+'e'+decimals)+'e-'+decimals);
 }

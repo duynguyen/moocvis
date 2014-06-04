@@ -1,0 +1,14 @@
+{% extends "base.html" %}
+
+{% block title %}Visualization per lecture video{% endblock %}
+
+{% block content %}
+<h2>Statistics of all lectures</h2>
+<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
+<script src="http://d3js.org/d3.v3.js"></script>
+<script src="http://code.highcharts.com/highcharts.js"></script>
+<script src="http://code.highcharts.com/highcharts-more.js"></script>
+<select id="option"></select>
+<div id="container" style="width: 600px; height: 400px; margin: 0 auto;"></div>
+<script src="{{ STATIC_URL }}js/lectures.js"></script>
+{% endblock %}

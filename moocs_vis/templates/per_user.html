@@ -21,8 +21,20 @@
 	Choose indicator:
 	<select id='select_indicator' name='indicator_q'>
 	</select>
+	Choose playback rate:
+	<div class="toggle-btn-grp joint-toggle">
+		{% for a in rates %}
+			<label onclick="" class="toggle-btn {% if a == playrate_q %}success{% endif %} achievement">
+				<input type="radio" class="visuallyhidden" name="playrate_q" value="{{ a }}" {% if a == playrate_q %}checked{% endif %}>{{ a }}
+			</label>
+		{% endfor %}
+	</div>
 	<input id='search' value='Search' type='submit' />
 </form>
+<div class="right" style="padding-right:30px;">
+	<button id="toggle_legend">Toggle legend</button>
+	<img id="legend_img" src="{{ STATIC_URL }}img/explanation2.png" style="display:none;position:absolute;right:0;" width="500">
+</div>
 <div id='indicator_option' class='indicator_option invisible'></div>
 <div id="vis">Please choose options to display</div>
 <script src="{{ STATIC_URL }}js/per_user.js"></script>

@@ -4,6 +4,11 @@
   margin-bottom: 20px;
 }
 
+.visualization {
+  border: 5px solid black;
+  min-height: 720px;
+}
+
 h1 {
   color: orange;
 }
@@ -15,7 +20,7 @@ h1 {
 
 .search_form, .slider {
   float: left;
-  margin-right: 30px;
+  margin-right: 100px;
 }
 
 #level_slider {
@@ -24,22 +29,34 @@ h1 {
 }
 
 .show_option {
-  float: left;
+  line-height: 50px;
 }
 
 .slide {
   position: absolute;
   border: 3px solid black;
-  left: 850px;
+  left: 800px;
   bottom: 20px;
-  width: 400px;
-  height: 230px;
+  width: 410px;
+  height: 220px;
   margin: 0;
+}
+
+.slide_name {
+  position: absolute;
+  left: 650px;
+  bottom: 20px;
+  width: 150px;
+  height: 220px;
+  margin: 0;
+  text-align: center;
+  font-size: 12px;
+  font-weight: bold;
 }
 
 .slide img {
   width: 400px;
-  height: 230px;
+  height: 210px;
 }
 
 .bars {
@@ -73,8 +90,9 @@ h1 {
 }
 
 .node {
-  stroke: black;
-  stroke-width: 4.0px;
+  stroke: #888;
+  stroke-width: 2px;
+  box-shadow: 3px 3px 2px #888;
 }
 
 .link {
@@ -166,6 +184,18 @@ h1 {
   visibility: hidden;
 }
 
+.right {
+  float: right;
+}
+
+.left {
+  float: left;
+}
+
+.clear_both {
+  clear: both;
+}
+
 .invisible {
   display: none;
 }
@@ -184,9 +214,83 @@ h1 {
   top: 0;
 }
 
-
 .indicator_option {
   border: 3px solid #666;
   padding: 10px;
   margin: 10px;
 }
+
+.userclass_options {
+  margin-right: 100px;
+}
+
+/* toggle button */
+.toggle-btn-grp { 
+    margin: 3px 0; 
+}
+.toggle-btn { 
+    text-align:centre; 
+    margin:5px 2px;
+    padding:0.4em 3em; 
+    color:#000; 
+    background-color:#FFF; 
+    border-radius:10px; 
+    display:inline-block; 
+    border:solid 1px #CCC; 
+    cursor:pointer;
+}
+
+.toggle-btn-grp.joint-toggle .toggle-btn { 
+    margin: 5px -2px; 
+    padding:0.4em 2em; 
+    border-radius:0;
+    border-right-color:white;
+}
+.toggle-btn-grp.joint-toggle .toggle-btn:first-child { 
+    margin-left:2px; 
+    border-radius: 10px 0px 0px 10px; 
+}
+.toggle-btn-grp.joint-toggle .toggle-btn:last-child { 
+    margin-right:2px;  
+    border-radius: 0px 10px 10px 0px;
+    border-right:solid 1px #CCC;
+}
+
+
+.toggle-btn:hover { 
+    border:solid 1px #a0d5dc !important; 
+    background:#f1fdfe;
+}
+
+
+.toggle-btn.success { 
+    background:lightgreen;
+    border:solid 1px green !important; 
+}
+
+.toggle-btn.achievement.success { 
+    background: orange;
+    border:solid 1px orange !important; 
+}
+
+.visuallyhidden { 
+    border: 0; 
+    clip: rect(0 0 0 0); 
+    height: 1px; 
+    margin: -1px; 
+    overflow: hidden; 
+    padding: 0; 
+    position: absolute; 
+    width: 1px; 
+}
+
+.visuallyhidden.focusable:active, .visuallyhidden.focusable:focus { 
+    clip: auto; 
+    height: auto; 
+    margin: 0; 
+    overflow: visible; 
+    position: static; 
+    width: auto; 
+}
+
+/* end toggle button */

@@ -7,14 +7,6 @@ admin.autodiscover()
 from clickstream.views import current_date, hours_ahead
 from lectures.views import *
 
-# urlpatterns = patterns('',
-#     # Examples:
-#     # url(r'^$', 'moocs_vis.views.home', name='home'),
-#     # url(r'^blog/', include('blog.urls')),
-
-#     url(r'^admin/', include(admin.site.urls)),
-# )
-
 urlpatterns = patterns('',
 	url(r'^$', home),
     url(r'^hello/$', home),
@@ -25,6 +17,10 @@ urlpatterns = patterns('',
     url(r'^map/json/$', geo_map_json),
     url(r'^indicators/json/$', indicators_json),
     url(r'^per-lecture/$', per_lecture),
+    url(r'^lectures/$', lectures),
+    url(r'^lectures/users/$', lectures_users),
+    url(r'^lectures/json/$', lectures_json),
+    url(r'^lectures/users/json/$', lectures_users_json),
     url(r'^per-lecture/lecture-json/$', lecture_json),
     url(r'^per-user/$', per_user),
     url(r'^per-user/lecture-json/$', lecture_json_by_user),

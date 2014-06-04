@@ -1,6 +1,7 @@
 from django.shortcuts import render, render_to_response
 from django.http import Http404, HttpResponse, HttpResponseRedirect
 from django.template import RequestContext
+from lectures import clickstream_handler
 from lectures.clickstream_handler import *
 from lectures.forms import UploadFileForm
 from lectures.models import Lecture
@@ -59,26 +60,39 @@ def per_lecture(request):
 		'achievement_list': achievement_list,
 		}, context_instance=RequestContext(request))
 
+def lectures(request):
+	lectures = Lecture.objects.filter(slides_imported = True).order_by("week", "week_order")
+	return render_to_response('lectures.html', {
+		'lectures': lectures,
+		}, context_instance=RequestContext(request))
+
+def lectures_users(request):
+	lectures = Lecture.objects.filter(slides_imported = True).order_by("week", "week_order")
+	return render_to_response('lectures_by_user.html', {
+		'lectures': lectures,
+		'events': ['any', 'top_seeks', 'top_seeks_fw', 'top_seeks_bw', 'top_pauses', 'rate_changer'],
+		'rates': ['any', '0.5', '0.75', '1.0', '1.25', '1.5', '1.75', '2.0'],
+		}, context_instance=RequestContext(request))
+
 def per_user(request):
 	lectures = Lecture.objects.filter(slides_imported = True).order_by("week", "week_order")
 	lecture_list = []
 	for lecture in lectures:
 		lecture_list.append(str(lecture.week) + '-' + str(lecture.week_order))
-	lecture = ''
-	user = ''
-	seq = ''
-	indicator = ''
-	if 'lecture_q' in request.GET:
-		lecture = request.GET['lecture_q']
-	if 'user_q' in request.GET:
-		user = request.GET['user_q']
-	if 'seq_q' in request.GET:
-		seq = request.GET['seq_q']
-	if 'indicator_q' in request.GET:
-		indicator = request.GET['indicator_q']
+	lecture = request.GET.get('lecture_q', '')
+	user = request.GET.get('user_q')
+	seq = request.GET.get('seq_q')
+	indicator = request.GET.get('indicator_q')
+	playrate = request.GET.get('playrate_q')
 
-	return render_to_response('per_user.html', {'lecture_list': lecture_list, 'lecture_q': lecture, 'user_q': user, 'seq_q': seq, 'indicator_q': indicator},
-		# },
+	return render_to_response('per_user.html', {
+			'lecture_list': lecture_list,
+			'lecture_q': lecture,
+			'user_q': user, 'seq_q': seq,
+			'indicator_q': indicator,
+			'rates': ['any', '0.5', '0.75', '1.0', '1.25', '1.5', '1.75', '2.0'],
+			'playrate_q': playrate,
+		},
 		context_instance=RequestContext(request))
 
 def indicators_json(request):
@@ -120,23 +134,45 @@ def indicators_json(request):
 		'9412d6093b3534d5e61f81d13ff0bc85ba5d4ee9',
 		'72ef39cdc7803863c919ead70be79bd908a2a841',
 	]
+	rates = ['any', '0.5', '0.75', '1.0', '1.25', '1.5', '1.75', '2.0']
+	indicators = ['top_seeks', 'top_seeks_fw', 'top_seeks_bw', 'top_pauses', 'rate_changer']
+	response_data = {}
+	response_data['indicators'] = indicators
+	for indicator in indicators:
+		for rate in rates:
+			response_data[indicator + '-' + rate] = getattr(clickstream_handler, indicator)(lecture, 10, rate)
 
-	response_data = {
-		'top_seeks': top_seeks(lecture, 10), 'top_pauses': top_pauses(lecture, 10),
-		'not_much_jump': not_much_jump, 'few_clicks': few_clicks,
-		'low_prop_fw_bw': low_prop_fw_bw, 'high_prop_fw_bw': high_prop_fw_bw,
-		'high_fw': high_fw, 'high_bw': high_bw, 'rate_changer': top_ratechanges(lecture, 10),
-		'top_pauses_playrate_125': top_pauses_playrate(lecture, 10, 1.25), 'top_pauses_playrate_150': top_pauses_playrate(lecture, 10, 1.5),
-		'top_seeks_playrate_125': top_seeks_playrate(lecture, 10, 1.25), 'top_seeks_playrate_150': top_seeks_playrate(lecture, 10, 1.5)
-	}
+	# response_data = {
+	# 	'top_seeks': top_seeks(lecture, 10), 'top_pauses': top_pauses(lecture, 10),
+	# 	'not_much_jump': not_much_jump, 'few_clicks': few_clicks,
+	# 	'low_prop_fw_bw': low_prop_fw_bw, 'high_prop_fw_bw': high_prop_fw_bw,
+	# 	'high_fw': high_fw, 'high_bw': high_bw, 'rate_changer': top_ratechanges(lecture, 10),
+	# 	'top_pauses_playrate_125': top_pauses_playrate(lecture, 10, 1.25), 'top_pauses_playrate_150': top_pauses_playrate(lecture, 10, 1.5),
+	# 	'top_seeks_playrate_125': top_seeks_playrate(lecture, 10, 1.25), 'top_seeks_playrate_150': top_seeks_playrate(lecture, 10, 1.5),
+	# }
 
 	return HttpResponse(json.dumps(response_data), content_type="application/json")
 
 def lecture_json(request):
+	lecture = request.GET.get('lecture', '')
+	response_data = lecture_data(lecture)
+	if response_data:
+		return HttpResponse(json.dumps(response_data), content_type="application/json")
+	return HttpResponse("Some error occurs!", content_type="application/json")
+
+def lectures_json(request):
 	userclass = request.GET.get('userclass', '')
 	achievement = request.GET.get('achievement', '')
-	lecture = request.GET.get('lecture', '')
-	response_data = lecture_data(lecture, userclass, achievement)
+	option = request.GET.get('option', '')
+	course_id = request.GET.get('course_id', '')
+	response_data = get_weekly_stats(int(course_id))
+	if response_data:
+		return HttpResponse(json.dumps(response_data), content_type="application/json")
+	return HttpResponse("Some error occurs!", content_type="application/json")
+
+def lectures_users_json(request):
+	course_id = request.GET.get('course_id', '')
+	response_data = get_weekly_stats_users(int(course_id))
 	if response_data:
 		return HttpResponse(json.dumps(response_data), content_type="application/json")
 	return HttpResponse("Some error occurs!", content_type="application/json")

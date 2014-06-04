@@ -46,16 +46,22 @@ class Slide(models.Model):
         	self.lecture.week, self.lecture.week_order,
         	self.content_name, self.content_order)
 
-	def throughput_in(self):
+	def throughput_in(self, userclass='any', achievement='any'):
 		total = 0
 		for play in self.slideplay_set.all():
-			total += play.throughput_in()
+			total += play.throughput_in(userclass, achievement)
 		return total
 	
-	def throughput_out(self):
+	def throughput_out(self, userclass='any', achievement='any'):
 		total = 0
 		for play in self.slideplay_set.all():
-			total += play.throughput_out()
+			total += play.throughput_out(userclass, achievement)
+		return total
+
+	def throughput_incl(self, userclass='any', achievement='any'):
+		total = 0
+		for play in self.slideplay_set.all():
+			total += play.throughput_incl(userclass, achievement)
 		return total
 
 class SlidePlay(models.Model):
@@ -64,13 +70,31 @@ class SlidePlay(models.Model):
 	end_time = models.IntegerField()
 	order = models.SmallIntegerField()
 
-	def throughput_in(self):
-		# return len(Seek.objects.filter(~models.Q(source = self), target = self))
-		return len(Behavior.objects.filter(event_type = 'seeked', target = self))
+	def throughput_in(self, userclass='any', achievement='any'):
+		filtered = Behavior.objects.filter(~models.Q(source = self), target = self, event_type = 'seeked')
+		if not userclass == 'any':
+			filtered = filtered.filter(user__userclass=userclass)
+		if not achievement == 'any':
+			filtered = filtered.filter(user__achievement=achievement)
+		return filtered.count()
+		# return len(Behavior.objects.filter(event_type = 'seeked', target = self))
 	
-	def throughput_out(self):
-		# return len(Seek.objects.filter(~models.Q(target = self), source = self))
-		return len(Behavior.objects.filter(event_type = 'seeked', source = self))
+	def throughput_out(self, userclass='any', achievement='any'):
+		filtered = Behavior.objects.filter(~models.Q(target = self), source = self, event_type = 'seeked')
+		if not userclass == 'any':
+			filtered = filtered.filter(user__userclass=userclass)
+		if not achievement == 'any':
+			filtered = filtered.filter(user__achievement=achievement)
+		return filtered.count()
+		# return len(Behavior.objects.filter(event_type = 'seeked', source = self))
+
+	def throughput_incl(self, userclass='any', achievement='any'):
+		filtered = Behavior.objects.filter(target = self, source = self, event_type = 'seeked')
+		if not userclass == 'any':
+			filtered = filtered.filter(user__userclass=userclass)
+		if not achievement == 'any':
+			filtered = filtered.filter(user__achievement=achievement)
+		return filtered.count()
 
 class Behavior(models.Model):
 	source = models.ForeignKey(SlidePlay, null=True, related_name='slide_source')
