@@ -1,11 +1,11 @@
-var lecturesData;
+// var lecturesData;
 
-$.ajax({
-    dataType: "json",
-    url: "json?course_id=1",
-    async: false,
-    success: function(data){ lecturesData = data; }
-});
+// $.ajax({
+//     dataType: "json",
+//     url: "json?course_id=1",
+//     async: false,
+//     success: function(data){ lecturesData = data; }
+// });
 
 $(".toggle-btn input[type=radio]:first").attr('checked', 'checked');
 $('input[name="playrate_q"]:first').parent().toggleClass("success");
@@ -24,8 +24,9 @@ $(".toggle-btn input[type=radio]").change(function() {
 });
 
 
-$('#container').css('width', 2500);
-$('#container').css('height', 600);
+$('.vis-container').css('width', $(window).width() - 100);
+$('#container').css('width', 3500);
+$('#container').css('height', 800);
 redraw();
 
 function redraw() {
@@ -71,7 +72,7 @@ function redraw() {
                     }
                 },
                 minSize: '2%',
-                maxSize: '10%'
+                maxSize: '8%'
             },
             series: {
                 cursor: 'pointer',
@@ -96,6 +97,7 @@ function redraw() {
             categories: lecturesData['weeks'],
             opposite: true,
             minTickInterval: 1,
+            min: 0,
         },
 
         yAxis: {

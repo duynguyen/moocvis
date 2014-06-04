@@ -4,17 +4,23 @@
     <title>{% block title %}{% endblock %}</title>
     <link rel="stylesheet" href="//code.jquery.com/ui/1.10.4/themes/smoothness/jquery-ui.css">
     <link rel="stylesheet" href="{{ STATIC_URL }}css/jquery.ui.labeledslider.css">
-    <link rel="stylesheet" href="{{ STATIC_URL }}css/base.css" />
     <link href="http://netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="{{ STATIC_URL }}css/base.css" />
 </head>
 <body>
-    <h1>MOOCs clickstream visualization project</h1>
-	{% include "nav.html" %}
+    <div class="page-header">
+        <h1>Clickstream Visualization for MOOCs <small>Functional Programming Principles in Scala</small></h1>
+    </div>
+    {% include "nav.html" %}
     {% block content %}{% endblock %}
     {% block footer %}
     <div class="clear_both"></div>
-    <hr>
-    <p>CEDE Lab. EPFL.</p>
+    <div class='page-footer'>
+        <hr>
+        <span class="left" style="line-height:50px;">CEDE-CHILI Lab</span>
+        <img src="{{ STATIC_URL }}img/epfl_med.png" height="50" class="right">
+        <div class="clear_both"></div>
+    </div>
     {% endblock %}
 </body>
 </html>

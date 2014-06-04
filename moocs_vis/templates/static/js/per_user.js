@@ -16,8 +16,10 @@ reloadIndicators(lecture);
 var keys = [];
 
 // init value
-$('input[name="playrate_q"]:first').attr('checked', 'checked');
-$('input[name="playrate_q"]:first').parent().toggleClass("success");
+if(!$('input[name="playrate_q"]:checked')) {
+  $('input[name="playrate_q"]:first').attr('checked', 'checked');
+  $('input[name="playrate_q"]:first').parent().toggleClass("success");
+}
 
 $.each(indicators.indicators, function(i, k) {
   $("#select_indicator").append("<option value='" + k + "'>" + k + "</option>");

@@ -3,55 +3,59 @@
 {% block title %}Visualization per lecture video{% endblock %}
 
 {% block content %}
-<h2>Visualization per lecture video</h2>
+<div class="page-title">
+	<h2>Visualization per lecture video</h2>
+</div>
 <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
 <script src="http://d3js.org/d3.v3.js"></script>
 <script src="http://code.jquery.com/ui/1.10.4/jquery-ui.js"></script>
 <script src="{{ STATIC_URL }}js/jquery.ui.labeledslider.js"></script>
 <div class='container'>
-	<div class="search_form">
-		<form id='#search_form' method='get'>
-			<select id='lecture_q' name='lecture_q'>
-				{% for l in lecture_list %}
-					<option value="{{ l }}" {% if l == lecture_q %}selected{% endif %}>Lecture {{ l }}</option>
+	<div class="dashboard-container">
+		<div class="search_form">
+			<form id='#search_form' method='get'>
+				<select id='lecture_q' name='lecture_q' class="form-control inline-select">
+					{% for l in lecture_list %}
+						<option value="{{ l }}" {% if l == lecture_q %}selected{% endif %}>Lecture {{ l }}</option>
+					{% endfor %}
+				</select>
+				<input id='nonclick_rate' name='nonclick_rate' type='hidden' value="{{ nonclick_rate }}" />
+				<input id='search' value='Search' type='submit' class='btn btn-primary' />
+			</form>
+		</div>
+		<div class="clear_both"></div>
+		<div class="userclass_options left">
+			Choose user class:
+			<div class="toggle-btn-grp joint-toggle">
+				<label onclick="" class="toggle-btn {% if not userclass %}success{% endif %}"><input type="radio" class="visuallyhidden" name="userclass_q" value="any" checked>any</label>
+				{% for c in userclass_list %}
+					<label onclick="" class="toggle-btn {% if c == userclass %}success{% endif %}"><input type="radio" class="visuallyhidden" name="userclass_q" value="{{ c }}" {% if c == userclass %}checked{% endif %}>{{ c }}</label>
 				{% endfor %}
-			</select>
-			<input id='nonclick_rate' name='nonclick_rate' type='hidden' value="{{ nonclick_rate }}" />
-			<input id='search' value='Search' type='submit' />
-		</form>
-	</div>
-	<div class="clear_both"></div>
-	<div class="userclass_options left">
-		Choose user class:
-		<div class="toggle-btn-grp joint-toggle">
-			<label onclick="" class="toggle-btn {% if not userclass %}success{% endif %}"><input type="radio" class="visuallyhidden" name="userclass_q" value="any" checked>any</label>
-			{% for c in userclass_list %}
-				<label onclick="" class="toggle-btn {% if c == userclass %}success{% endif %}"><input type="radio" class="visuallyhidden" name="userclass_q" value="{{ c }}" {% if c == userclass %}checked{% endif %}>{{ c }}</label>
-			{% endfor %}
+			</div>
 		</div>
-	</div>
-	<div class="achievement_options left">
-		Choose achievement:
-		<div class="toggle-btn-grp joint-toggle">
-			<label onclick="" class="toggle-btn {% if not achievement %}success{% endif %} achievement"><input type="radio" class="visuallyhidden" name="achievement_q" value="any" checked>any</label>
-			{% for a in achievement_list %}
-				<label onclick="" class="toggle-btn {% if a == achievement %}success{% endif %} achievement"><input type="radio" class="visuallyhidden" name="achievement_q" value="{{ a }}" {% if a == achievement %}checked{% endif %}>{{ a }}</label>
-			{% endfor %}
+		<div class="achievement_options left">
+			Choose achievement:
+			<div class="toggle-btn-grp joint-toggle">
+				<label onclick="" class="toggle-btn {% if not achievement %}success{% endif %} achievement"><input type="radio" class="visuallyhidden" name="achievement_q" value="any" checked>any</label>
+				{% for a in achievement_list %}
+					<label onclick="" class="toggle-btn {% if a == achievement %}success{% endif %} achievement"><input type="radio" class="visuallyhidden" name="achievement_q" value="{{ a }}" {% if a == achievement %}checked{% endif %}>{{ a }}</label>
+				{% endfor %}
+			</div>
 		</div>
+		<div class="clear_both"></div>
+		<div class="slider left">
+			Min connection strength to show (e<sup>-4</sup> / user):
+			<div id="level_slider" class="myslider"></div>
+		</div>
+		<div class="show_option left">
+			<label for="show_self">Show self-jump behaviors</label> <input type="checkbox" id="show_self" checked />
+		</div>
+		<div style="right:0;position:absolute;">
+			<button id="toggle_legend" class="btn btn-info">Toggle legend</button>
+			<img id="legend_img" src="{{ STATIC_URL }}img/explanation1.png" style="display:none;position:absolute;right:0;z-index:1;" width="500">
+		</div>
+		<div class="clear_both"></div>
 	</div>
-	<div class="clear_both"></div>
-	<div class="slider left">
-		Min connection strength to show (e<sup>-4</sup> / user):
-		<div id="level_slider" class="myslider"></div>
-	</div>
-	<div class="show_option left">
-		<label for="show_self">Show self-jump behaviors</label> <input type="checkbox" id="show_self" checked />
-	</div>
-	<div class="right">
-		<button id="toggle_legend">Toggle legend</button>
-		<img id="legend_img" src="{{ STATIC_URL }}img/explanation1.png" style="display:none;position:absolute;right:0;z-index:1;" width="500">
-	</div>
-	<div class="clear_both"></div>
 	<div class="visualization left">
 		<div id="vis">Please choose a lecture to show</div>
 		<div id="arrowpath"></div>

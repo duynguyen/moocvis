@@ -92,6 +92,7 @@ def importUsersStats():
 			u.achievement = row['achievement']
 			if row['userclass'] != "NA":
 				u.userclass = row['userclass'].lower()
+			print u.achievement
 			u.save()
 		else:
 			print row['user_id']

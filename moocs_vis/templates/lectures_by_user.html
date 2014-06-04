@@ -3,26 +3,37 @@
 {% block title %}Visualization per lecture video{% endblock %}
 
 {% block content %}
-<h2>Statistics of all lectures for users</h2>
+<div class="page-title">
+	<h2>Statistics of all lectures for users</h2>
+</div>
+
 <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
 <script src="http://d3js.org/d3.v3.js"></script>
 <script src="http://code.highcharts.com/highcharts.js"></script>
 <script src="http://code.highcharts.com/highcharts-more.js"></script>
-Choose indicator:
-<select id='select_indicator' name='indicator_q'>
-	{% for a in events %}
-		<option value="{{ a }}">{{ a }}</option>
-	{% endfor %}
-</select>
-Choose playback rate:
-<div class="toggle-btn-grp joint-toggle">
-	{% for a in rates %}
-		<label onclick="" class="toggle-btn {% if a == playrate_q %}success{% endif %} achievement">
-			<input type="radio" class="visuallyhidden" name="playrate_q" value="{{ a }}" {% if a == playrate_q %}checked{% endif %}>{{ a }}
-		</label>
-	{% endfor %}
+<div class="dashboard-container">
+	<div class="left">
+		Choose indicator:
+		<select id='select_indicator' name='indicator_q' class="form-control inline-select">
+			{% for a in events %}
+				<option value="{{ a }}">{{ a }}</option>
+			{% endfor %}
+		</select>
+	</div>
+	<div class="right">
+		Choose playback rate:
+		<div class="toggle-btn-grp joint-toggle" style="display:inline;">
+			{% for a in rates %}
+				<label onclick="" class="toggle-btn {% if a == playrate_q %}success{% endif %} achievement">
+					<input type="radio" class="visuallyhidden" name="playrate_q" value="{{ a }}" {% if a == playrate_q %}checked{% endif %}>{{ a }}
+				</label>
+			{% endfor %}
+		</div>
+	</div>
 </div>
-<div id="container" style="width: 600px; height: 400px; margin: 0 auto;"></div>
+<div class="vis-container">
+	<div id="container" style="width: 600px; height: 400px; margin: 0 auto;"></div>
+</div>
 <script src="{{ STATIC_URL }}js/data_lectures_by_user.js"></script>
 <script src="{{ STATIC_URL }}js/lectures_by_user.js"></script>
 {% endblock %}
