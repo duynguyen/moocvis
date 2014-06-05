@@ -79,24 +79,38 @@ def importUsers():
 			country_code = row['country_code'], country_name = row['country_name']).save()
 
 def importUsersStats():
-	content = getArrayFromCsv('files/progfun_stats.csv')
-
+	content = getArrayFromCsv('files/users.csv')
 	for row in content:
-		if row['session'] != 'progfun_001':
-			continue
-		u_list = User.objects.filter(session_user_id=row['user_id'])
+		u_list = User.objects.filter(user_id=int(row['user_id']))
 		if u_list and len(u_list) == 1:
 			u = u_list[0]
-			if row['grade'] != "NA":
-				u.grade = round(float(row['grade']), 2)
+			if row['grade'] != "NULL":
+				u.grade = float(row['grade'])
 			u.achievement = row['achievement']
-			if row['userclass'] != "NA":
-				u.userclass = row['userclass'].lower()
+			u.userclass = row['userclass']
 			print u.achievement
 			u.save()
 		else:
 			print row['user_id']
 			print u_list
+	# content = getArrayFromCsv('files/progfun_stats.csv')
+
+	# for row in content:
+	# 	if row['session'] != 'progfun_001':
+	# 		continue
+	# 	u_list = User.objects.filter(session_user_id=row['user_id'])
+	# 	if u_list and len(u_list) == 1:
+	# 		u = u_list[0]
+	# 		if row['grade'] != "NA":
+	# 			u.grade = round(float(row['grade']), 2)
+	# 		u.achievement = row['achievement']
+	# 		if row['userclass'] != "NA":
+	# 			u.userclass = row['userclass'].lower()
+	# 		print u.achievement
+	# 		u.save()
+	# 	else:
+	# 		print row['user_id']
+	# 		print u_list
 
 def importSlides(content, week, week_order):
 	l = Lecture.objects.filter(week=int(week), week_order=int(week_order))[0]
