@@ -161,14 +161,14 @@ function reDraw(lecture) {
 }
 
 function getGraph(lecture) {
-  var graph;
-  $.ajax({
-    dataType: "json",
-    url: "lecture-json?lecture=" + $('#lecture_q').val(),
-    async: false,
-    success: function(data){ graph = data; }
-  });
-  return graph;
+  // var graph;
+  // $.ajax({
+  //   dataType: "json",
+  //   url: "lecture-json?lecture=" + $('#lecture_q').val(),
+  //   async: false,
+  //   success: function(data){ graph = data; }
+  // });
+  return lectureData[$('#lecture_q').val()];
 }
 
 function getPercent(lecture) {
