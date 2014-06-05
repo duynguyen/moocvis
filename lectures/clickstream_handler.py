@@ -79,7 +79,7 @@ def importUsers():
 			country_code = row['country_code'], country_name = row['country_name']).save()
 
 def importUsersStats():
-	content = getArrayFromCsv('files/users.csv')
+	content = getArrayFromCsv('files/users_bk.csv')
 	for row in content:
 		u_list = User.objects.filter(user_id=int(row['user_id']))
 		if u_list and len(u_list) == 1:

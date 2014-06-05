@@ -16,7 +16,7 @@ reloadIndicators(lecture);
 var keys = [];
 
 // init value
-if(!$('input[name="playrate_q"]:checked')) {
+if($('input[name="playrate_q"]:checked').length == 0) {
   $('input[name="playrate_q"]:first').attr('checked', 'checked');
   $('input[name="playrate_q"]:first').parent().toggleClass("success");
 }
@@ -100,7 +100,7 @@ function drawGraph(lecture, user) {
   height = graphLength + topOffset + 150;
   $('#vis').html('');
   var svg = d3.select("#vis").append("svg").attr("width", width).attr("height", height);
-  var tooltipDiv = d3.select("body").append("div")   // declare the properties for the div used for the tooltips
+  var tooltipDiv = d3.select("#vis").append("div")   // declare the properties for the div used for the tooltips
               .attr("class", "tooltip")       // apply the 'tooltip' class
               .style("opacity", 0);           // set the opacity to nil
 
@@ -197,12 +197,12 @@ function drawGraph(lecture, user) {
             tooltipDiv.transition()                                    // declare the transition properties to bring fade-in div
                     .duration(50)                                  // it shall take 200ms
                     .style("opacity", .9);                          // and go all the way to an opacity of .9
-                  tooltipDiv.html(additionalText)  // add the text of the tooltip as html 
-                    .style("left", (pageX < (width - 300) ? pageX : (width - 300)) + "px")         // move it in the x direction 
-                    .style("top", (pageY > 100 ? (pageY - 10) : 10) + "px")    // move it in the y direction
-                    .style("background-image","url(" + nodes[d.x - 1]['image_url'] + ")")
-                    .style("background-size","contain")
-                    .style("background-repeat","no-repeat");
+            tooltipDiv.html(additionalText)  // add the text of the tooltip as html 
+              .style("left", (pageX < (width - 300) ? pageX : (width - 300)) + "px")         // move it in the x direction 
+              .style("top", (pageY - 160) + "px")    // move it in the y direction
+              .style("background-image","url(" + nodes[d.x - 1]['image_url'] + ")")
+              .style("background-size","contain")
+              .style("background-repeat","no-repeat");
           })
           .on("mouseout", function() {
             tooltipDiv.transition()                                    // declare the transition properties to fade-out the div
@@ -269,7 +269,7 @@ function drawGraph(lecture, user) {
                     .style("opacity", .9);                          // and go all the way to an opacity of .9
                   tooltipDiv.html('')  // add the text of the tooltip as html 
                     .style("left", (pageX < (width - 300) ? pageX : (width - 300)) + "px")         // move it in the x direction 
-                    .style("top", (pageY > 100 ? (pageY - 10) : 10) + "px")    // move it in the y direction
+                    .style("top", (pageY - 160) + "px")    // move it in the y direction
                     .style("background-image","url(" + d.image_url + ")")
                     .style("background-size","contain")
                     .style("background-repeat","no-repeat");

@@ -18,7 +18,7 @@ $("#option").on('change', function() {
 });
 
 $('#container').css('width', $(window).width() - 50);
-$('#container').css('height', 600);
+$('#container').css('height', 800);
 redraw('all');
 
 function redraw(option) {
@@ -34,7 +34,7 @@ function redraw(option) {
         },
 
         subtitle: {
-            text: 'Click on a bubble to view details about lecture'
+            text: 'Click on a bubble to view clickstream details about lecture'
         },
 
         plotOptions: {
@@ -47,7 +47,7 @@ function redraw(option) {
                     }
                 },
                 minSize: '2%',
-                maxSize: '10%'
+                maxSize: '13%'
             },
             series: {
                 cursor: 'pointer',
