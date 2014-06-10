@@ -14,7 +14,19 @@
 	Filter
 	<select id="option" class="form-control inline-select"></select>
 	events
+	<div class="right">
+		Choose data source:
+		<div class="toggle-btn-grp joint-toggle" style="display:inline;">
+			<label onclick="" class="toggle-btn success">
+				<input type="radio" class="visuallyhidden" name="chart_option" value="total" checked>Total
+			</label>
+			<label onclick="" class="toggle-btn">
+				<input type="radio" class="visuallyhidden" name="chart_option" value="user_average">Average by user
+			</label>
+		</div>
+	</div>
 </div>
 <div id="container" style="width: 600px; height: 400px; margin: 0 auto;"></div>
+<script src="{{ STATIC_URL }}js/data_lectures.js"></script>
 <script src="{{ STATIC_URL }}js/lectures.js"></script>
 {% endblock %}

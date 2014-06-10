@@ -11,7 +11,7 @@
 <script src="http://d3js.org/d3.v3.js"></script>
 <script src="http://code.jquery.com/ui/1.10.4/jquery-ui.js"></script>
 <div class="dashboard-container">
-	<form id='#search_form' method='get'>
+	<form id='search_form' method='get'>
 		<select id='lecture_q' name='lecture_q' class="form-control inline-select left">
 			{% for l in lecture_list %}
 				<option value="{{ l }}" {% if l == lecture_q %}selected{% endif %}>Lecture {{ l }}</option>
@@ -25,6 +25,7 @@
 		<input name='seq_q' type='radio' value="time_seq" {% if seq_q == "time_seq" %}checked{% endif %} /> By time sequence
 		<input id='search' value='Search' type='submit' class="btn btn-primary" style="margin-left:30px;" />
 		<div class="clear_both" style="margin-bottom:20px;"></div>
+		<b>OR</b><br>
 		<div class="left">
 			Choose indicator:
 			<select id='select_indicator' name='indicator_q' class="form-control inline-select">
@@ -42,13 +43,23 @@
 		</div>
 		<div class="clear_both"></div>
 	</form>
-	<div class="right" style="padding-right:30px;">
+	<div class="left" style="position:relative;width:500px;">
+		<button id="user_info_btn" class="btn btn-info" style="margin-top:40px;">User information</button>
+		<div id="user_info" class="user_info">
+			Country: <span id="user_country"></span><br>
+			Userclass: <span id="user_class"></span><br>
+			Grade: <span id="user_grade"></span><br>
+			Achievement: <span id="user_achievement"></span>
+		</div>
+	</div>
+	<div class="right">
 		<button id="toggle_legend" class="btn btn-info" style="margin-top:40px;">Toggle legend</button>
-		<img id="legend_img" src="{{ STATIC_URL }}img/explanation2.png" style="display:none;position:absolute;right:0;" width="500">
+		<img id="legend_img" src="{{ STATIC_URL }}img/explanation2.png" style="display:none;position:absolute;right:0;z-index:1;" width="500">
 	</div>
 	<div id='indicator_option' class='indicator_option invisible'></div>
 </div>
+<div class="clear_both"></div>
 <div id="vis" style="position:relative;">Please choose options to display</div>
+<script src="{{ STATIC_URL }}js/data_indicators.js"></script>
 <script src="{{ STATIC_URL }}js/per_user.js"></script>
-
 {% endblock %}

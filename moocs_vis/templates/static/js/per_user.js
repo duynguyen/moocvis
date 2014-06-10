@@ -51,13 +51,18 @@ $("#toggle_legend").click(function() {
   $("#legend_img").slideToggle("slow");
 });
 
+$("#user_info_btn").click(function() {
+  $("#user_info").slideToggle("slow");
+});
+
 function reloadIndicators(lecture) {
-  $.ajax({
-    dataType: "json",
-    url: "/indicators/json/?lecture=" + lecture,
-    async: false,
-    success: function(data){ indicators = data; }
-  });
+  // $.ajax({
+  //   dataType: "json",
+  //   url: "/indicators/json/?lecture=" + lecture,
+  //   async: false,
+  //   success: function(data){ indicators = data; }
+  // });
+  indicators = indicatorsData[lecture];
 }
 
 function updateSeq() {
@@ -82,6 +87,16 @@ function updateUserList() {
 function drawGraph(lecture, user) {
 
   graph = getGraph(lecture, user);
+
+  // init user info
+  var user = graph["user"];
+  if(user) {
+    $("#user_country").html(user.country_name);
+    $("#user_class").html(user.userclass);
+    $("#user_grade").html(user.grade);
+    $("#user_achievement").html(user.achievement);
+  }
+
   var nodes = graph["nodes"];
       circles = graph["circles"];
       line_links = graph["line_links"];
@@ -131,103 +146,103 @@ function drawGraph(lecture, user) {
   //SHADOW DEFINITION
   createDefs(svg.append('svg:defs'));
 
-  function createDefs(defs) {
-      var dropShadowFilter = defs.append('svg:filter').attr('id', 'dropShadow');
-      dropShadowFilter.append('svg:feGaussianBlur').attr('in', 'SourceAlpha').attr('stdDeviation', 1);
-      dropShadowFilter.append('svg:feOffset').attr('dx', 0).attr('dy', 1).attr('result', 'offsetblur');
-      var feMerge = dropShadowFilter.append('svg:feMerge');
-      feMerge.append('svg:feMergeNode');
-      feMerge.append('svg:feMergeNode').attr('in', "SourceGraphic");
-  }
-
   drawRuler();
   drawTopNodes();
 
   $.each(circles, function(i, d) {
-      var node = svg.append("g").attr("class", "gnode");
-      // var r = nodeDistance * (d.type == 'virtual' ? radius / 2 : radius) / 100
-      var r = (d.type == 'virtual' ? radius / 2 : (d.type == 'dest' ? radius / 1.5 : radius));
-      // var textMargin = d.type == 'ratechange' ? r / 2 : 0;
-      node.append("circle")
-          .attr('filter', 'url(#dropShadow)')
-          .attr("class", "circle")
-          .attr("id", "circle" + d.name)
-          .attr("r", r)
-          .attr("cx", (d.x - 1) * nodeDistance + leftOffset + nodeDistance * 3 / 10)
-          .attr("cy", (d.y + 1) * 50 + topOffset * 1.5)
-          .style("fill", function() {
-            if(d.type == 'seeked') return 'black';
-            else if(d.type == 'pause') return 'red';
-            else if(d.type == 'ratechange') return '#bbb';
-            else if(d.type == 'dest') return 'black';
-            else return 'grey';
-          })
-          .style("fill-opacity", d.type == 'seek' ? 1 : 0.8);
+    var node = svg.append("g").attr("class", "gnode");
+    // var r = nodeDistance * (d.type == 'virtual' ? radius / 2 : radius) / 100
+    var r = (d.type == 'virtual' ? radius / 2 : (d.type == 'dest' ? radius / 1.5 : radius));
+    // var textMargin = d.type == 'ratechange' ? r / 2 : 0;
+    node.append("circle")
+        .attr('filter', 'url(#dropShadow)')
+        .attr("class", "circle")
+        .attr("id", "circle" + d.name)
+        .attr("r", r)
+        .attr("cx", (d.x - 1) * nodeDistance + leftOffset + nodeDistance * 3 / 10)
+        .attr("cy", (d.y + 1) * 50 + topOffset * 1.5)
+        .style("fill", function() {
+          if(d.type == 'seeked') return 'black';
+          else if(d.type == 'pause') return 'red';
+          else if(d.type == 'ratechange') return '#bbb';
+          else if(d.type == 'dest') return 'black';
+          else return 'grey';
+        })
+        .style("fill-opacity", d.type == 'seek' ? 1 : 0.8);
 
-      if(d.type == 'ratechange' && d.rate - d.prev_rate > 0) {
-        node.append("image")
-          .attr("xlink:href", "/static/img/up.png")
-          .attr("x", (d.x - 1) * nodeDistance + leftOffset + nodeDistance * 3 / 10 - r / 3)
-          .attr("y", (d.y + 1) * 50 + topOffset * 1.5 - r - 2)
-          .attr("width", r / 1.5)
-          .attr("height", r);
-      }
-      if(d.type == 'ratechange' && d.rate - d.prev_rate < 0) {
-        node.append("image")
-          .attr("xlink:href", "/static/img/down.png")
-          .attr("x", (d.x - 1) * nodeDistance + leftOffset + nodeDistance * 3 / 10 - r / 3)
-          .attr("y", (d.y + 1) * 50 + topOffset * 1.5 + 2)
-          .attr("width", r / 1.5)
-          .attr("height", r);
-      }
-      
-      node.append("text")
-          .attr("text-anchor", "middle")
-          .attr("dx", (d.x - 1) * nodeDistance + leftOffset + nodeDistance * 3 / 10)
-          .attr("dy", (d.y + 1) * 50 + topOffset * 1.5 + r / 4)
-          .text(d.time)
-          .attr("font-size", "10px")
-          .style("fill", "white");
-      node.on("mouseover", function() {
-            var pageX = d3.mouse(this)[0];
-            var pageY = d3.mouse(this)[1];
-            // $("#slide").html('<img src=slide_img/week' + lecture + '_' + d.slide + '.png />');
-            var additionalText = d.type == 'pause' ? 'Pause in ' + d.duration + ' seconds'
-            : (d.rate ? "Change rate: " + d.prev_rate + " ---> " + d.rate : '')
-            tooltipDiv.transition()                                    // declare the transition properties to bring fade-in div
-                    .duration(50)                                  // it shall take 200ms
-                    .style("opacity", .9);                          // and go all the way to an opacity of .9
-            tooltipDiv.html(additionalText)  // add the text of the tooltip as html 
-              .style("left", (pageX < (width - 300) ? pageX : (width - 300)) + "px")         // move it in the x direction 
-              .style("top", (pageY - 160) + "px")    // move it in the y direction
-              .style("background-image","url(" + nodes[d.x - 1]['image_url'] + ")")
-              .style("background-size","contain")
-              .style("background-repeat","no-repeat");
-          })
-          .on("mouseout", function() {
-            tooltipDiv.transition()                                    // declare the transition properties to fade-out the div
-              .duration(100)                                  // it shall take 500ms
-              .style("opacity", 0);
-          });
+    if(d.type == 'ratechange' && d.rate - d.prev_rate > 0) {
+      node.append("image")
+        .attr("xlink:href", "/static/img/up.png")
+        .attr("x", (d.x - 1) * nodeDistance + leftOffset + nodeDistance * 3 / 10 - r / 3)
+        .attr("y", (d.y + 1) * 50 + topOffset * 1.5 - r - 2)
+        .attr("width", r / 1.5)
+        .attr("height", r);
+    }
+    if(d.type == 'ratechange' && d.rate - d.prev_rate < 0) {
+      node.append("image")
+        .attr("xlink:href", "/static/img/down.png")
+        .attr("x", (d.x - 1) * nodeDistance + leftOffset + nodeDistance * 3 / 10 - r / 3)
+        .attr("y", (d.y + 1) * 50 + topOffset * 1.5 + 2)
+        .attr("width", r / 1.5)
+        .attr("height", r);
+    }
+    
+    node.append("text")
+        .attr("text-anchor", "middle")
+        .attr("dx", (d.x - 1) * nodeDistance + leftOffset + nodeDistance * 3 / 10)
+        .attr("dy", (d.y + 1) * 50 + topOffset * 1.5 + r / 4)
+        .text(d.time)
+        .attr("font-size", "10px")
+        .style("fill", "white");
+    node.on("mouseover", function() {
+          var pageX = d3.mouse(this)[0];
+          var pageY = d3.mouse(this)[1];
+          // $("#slide").html('<img src=slide_img/week' + lecture + '_' + d.slide + '.png />');
+          var additionalText = d.type == 'pause' ? 'Pause in ' + d.duration + ' seconds'
+          : (d.rate ? "Change rate: " + d.prev_rate + " ---> " + d.rate : '')
+          tooltipDiv.transition()                                    // declare the transition properties to bring fade-in div
+                  .duration(50)                                  // it shall take 200ms
+                  .style("opacity", .9);                          // and go all the way to an opacity of .9
+          tooltipDiv.html(additionalText)  // add the text of the tooltip as html 
+            .style("left", (pageX < (width - 300) ? pageX : (width - 300)) + "px")         // move it in the x direction 
+            .style("top", (pageY - 160) + "px")    // move it in the y direction
+            .style("background-image","url(" + nodes[d.x - 1]['image_url'] + ")")
+            .style("background-size","contain")
+            .style("background-repeat","no-repeat");
+        })
+        .on("mouseout", function() {
+          tooltipDiv.transition()                                    // declare the transition properties to fade-out the div
+            .duration(100)                                  // it shall take 500ms
+            .style("opacity", 0);
+        });
   });
 
   svg.selectAll(".link_line").data(line_links).enter().append("path").attr("class", "link_line")
-  .attr("fill", function(d) {
+    .attr("fill", function(d) {
       if(d.group == 'BW') return 'red';
       else if((d.group == 'FW')) return 'green';
       else if((d.group == 'cBW')) return '#fa8072';
       else if((d.group == 'cFW')) return '#7fff00';
       else return '#000';
-  })
-  .attr("fill-opacity", function(d) {
-      if(d.group == 'v' || d.group == 'cBW' || d.group == 'cFW') return 0.7;
-  })
-  .attr("id", function(i, d) {
-      return "link_line" + d;
-  })
-  .attr("d", function(d) {
-      return drawCurve(d);
-  });
+    })
+    .attr("fill-opacity", function(d) {
+        if(d.group == 'v' || d.group == 'cBW' || d.group == 'cFW') return 0.7;
+    })
+    .attr("id", function(i, d) {
+        return "link_line" + d;
+    })
+    .attr("d", function(d) {
+        return drawCurve(d);
+    });
+
+  function createDefs(defs) {
+    var dropShadowFilter = defs.append('svg:filter').attr('id', 'dropShadow');
+    dropShadowFilter.append('svg:feGaussianBlur').attr('in', 'SourceAlpha').attr('stdDeviation', 1);
+    dropShadowFilter.append('svg:feOffset').attr('dx', 0).attr('dy', 1).attr('result', 'offsetblur');
+    var feMerge = dropShadowFilter.append('svg:feMerge');
+    feMerge.append('svg:feMergeNode');
+    feMerge.append('svg:feMergeNode').attr('in', "SourceGraphic");
+  }
 
   function getGraph(lecture, user) {
     var graph;

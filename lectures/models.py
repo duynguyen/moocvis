@@ -13,6 +13,12 @@ class User(models.Model):
 	def most_active(self, week, week_order):
 		Behavior.objects.filter(user = self)
 
+	def to_dict(self):
+		return {"id": self.id, "user_id": self.user_id, "session_user_id": self.session_user_id,
+		"eventing_user_id": self.eventing_user_id, "country_code": self.country_code,
+		"country_name": self.country_name, "grade": str(self.grade), "userclass": self.userclass,
+		"achievement": self.achievement}
+
 class Course(models.Model):
 	name = models.CharField(max_length=80)
 

@@ -214,7 +214,7 @@
 .indicator_option {
   border: 3px solid #666;
   padding: 10px;
-  margin: 10px;
+  margin: 100px 10px 10px 10px;
 }
 
 .userclass_options {
@@ -223,6 +223,15 @@
 
 .achievement_options {
   margin: 20px 0;
+}
+
+.user_info {
+  display: none;
+  position: absolute;
+  left: 0;
+  padding: 20px;
+  background-color: #ccc;
+  z-index: 1;
 }
 
 /* toggle button */
@@ -335,4 +344,8 @@
 .vis-container {
   overflow: auto;
   margin: 50px;
+}
+
+.error {
+  color: red;
 }

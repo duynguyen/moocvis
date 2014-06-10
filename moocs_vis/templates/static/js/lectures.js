@@ -1,27 +1,38 @@
-var lecturesData;
+// var lecturesData;
 
-$.ajax({
-    dataType: "json",
-    url: "json?course_id=1",
-    async: false,
-    success: function(data){ lecturesData = data; }
+// $.ajax({
+//     dataType: "json",
+//     url: "json?course_id=1",
+//     async: false,
+//     success: function(data){ lecturesData = data; }
+// });
+
+$(".toggle-btn input[type=radio]").change(function() {
+    if($(this).attr("name")) {
+        $(this).parent().addClass("success").siblings().removeClass("success")
+    } else {
+        $(this).parent().toggleClass("success");
+    }
+    redraw();
 });
 
 var options;
-$.each(lecturesData.events, function(i, e) {
+$.each(lecturesData[$('input[name="chart_option"]:checked').val()].events, function(i, e) {
     options += "<option value='" + e + "'>" + e + "</option>";
 });
 $("#option").html(options);
 
 $("#option").on('change', function() {
-    redraw($(this).val());
+    redraw();
 });
 
 $('#container').css('width', $(window).width() - 50);
 $('#container').css('height', 800);
-redraw('all');
+redraw();
 
-function redraw(option) {
+function redraw() {
+    var option = $("#option").val();
+    var chart_option = $('input[name="chart_option"]:checked').val();
     $('#container').html('');
     $('#container').highcharts({
         chart: {
@@ -79,10 +90,10 @@ function redraw(option) {
             // max: 2.5,
             startOnTick: false,
             endOnTick: false,
-            categories: lecturesData.weeks,
+            categories: lecturesData[chart_option].weeks,
             title: 'Course',
             reversed: true
         },
-        series: lecturesData.data[option]
+        series: lecturesData[chart_option].data[option]
     });
 }

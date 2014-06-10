@@ -13,7 +13,7 @@
 <script src="http://code.highcharts.com/highcharts-more.js"></script>
 <div class="dashboard-container">
 	<div class="left">
-		Choose indicator:
+		<b>Choose indicator:</b>
 		<select id='select_indicator' name='indicator_q' class="form-control inline-select">
 			{% for a in events %}
 				<option value="{{ a }}">{{ a }}</option>
@@ -21,13 +21,31 @@
 		</select>
 	</div>
 	<div class="right">
-		Choose playback rate:
+		<b>Choose playback rate:</b>
 		<div class="toggle-btn-grp joint-toggle" style="display:inline;">
 			{% for a in rates %}
 				<label onclick="" class="toggle-btn {% if a == playrate_q %}success{% endif %} achievement">
 					<input type="radio" class="visuallyhidden" name="playrate_q" value="{{ a }}" {% if a == playrate_q %}checked{% endif %}>{{ a }}
 				</label>
 			{% endfor %}
+		</div>
+	</div>
+	<div class="clear_both"></div>
+	<b>OR</b><br><br>
+	<div class="left">
+		<label for="user_id">User</label>:
+		<input type="text" class="form-control" id="user_id" placeholder="Enter eventing_user_id" style="width:400px;display:inline;">
+		<button id="search_user_btn" class="btn btn-default">Search</button>
+		<span class="error hidden">User not found!</span>
+	</div>
+	<div class="right">
+		<div class="toggle-btn-grp joint-toggle" style="display:inline;">
+			<label onclick="" class="toggle-btn success">
+				<input type="radio" class="visuallyhidden" name="screen" value="full" checked>Full screen
+			</label>
+			<label onclick="" class="toggle-btn">
+				<input type="radio" class="visuallyhidden" name="screen" value="scaled">Extended screen
+			</label>
 		</div>
 	</div>
 </div>

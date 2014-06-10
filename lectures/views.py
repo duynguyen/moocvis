@@ -177,6 +177,14 @@ def lectures_users_json(request):
 		return HttpResponse(json.dumps(response_data), content_type="application/json")
 	return HttpResponse("Some error occurs!", content_type="application/json")
 
+def lectures_user_json(request):
+	course_id = request.GET.get('course_id', '')
+	user_id = request.GET.get('user_id', '')
+	response_data = get_stats_user(int(course_id), user_id)
+	if response_data:
+		return HttpResponse(json.dumps(response_data), content_type="application/json")
+	return HttpResponse("Some error occurs!", content_type="application/json")
+
 def lecture_json_by_user(request):
 	if 'lecture' in request.GET and 'user' in request.GET and 'seq' in request.GET:
 		lecture = request.GET['lecture']

@@ -6,8 +6,8 @@ var width = 1280, height = 680,
     numSlides = -1,
     maxStrength = 0,
     specLevel = 0;
-    stepSlider = 0.0005;
-    maxSlider = 0.01;
+    stepSlider = 5;
+    maxSlider = 100;
     maxThroughput = 0;
 
 var svg, graph, percent, force, node, link;
@@ -80,8 +80,8 @@ function updateLink() {
 function reDraw(lecture) {
   numSlides = -1;
   maxStrength = 0;
-  stepSlider = 0.0005;
-  maxSlider = 0.01;
+  stepSlider = 5;
+  maxSlider = 100;
   maxThroughput = 0;
 
   $("#vis").html('');
@@ -117,21 +117,21 @@ function reDraw(lecture) {
       }
   }
 
-  if (maxStrength / 10 < 0.0001) {
-    stepSlider = 0.0001;
+  if (maxStrength / 10 <1) {
+    stepSlider = 1;
     maxSlider = maxStrength;
-  } else if (maxStrength / 10 < 0.001 && maxStrength / 10 >= 0.0001) {
+  } else if (maxStrength / 10 < 10 && maxStrength / 10 >= 1) {
     stepSlider = parseFloat(maxStrength / 10);
     maxSlider = maxStrength;
   }
 
   $( "#level_slider" ).labeledslider({
-    value: parseInt(specLevel * 10000),
+    value: parseInt(specLevel),
     min: 0,
-    max: parseInt(maxSlider * 10000),
-    step: parseInt(stepSlider * 10000),
+    max: parseInt(maxSlider),
+    step: parseInt(stepSlider),
     slide: function(event, ui) {
-      specLevel = ui.value / 10000.0;
+      specLevel = ui.value;
       updateLink();
     }
   });
