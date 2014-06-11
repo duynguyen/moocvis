@@ -228,8 +228,8 @@ def runImport():
 
 def lecture_data(lecture):
 	start = int(round(time.time() * 1000))
-	userclass_list = ['any', 'active', 'viewers', 'inactive']
-	achievement_list = ['any', 'distinction', 'normal', 'none']
+	userclass_list = ['all', 'active', 'viewers', 'inactive']
+	achievement_list = ['all', 'distinction', 'normal', 'none']
 	if not lecture:
 		return None
 	tokens = lecture.split('-')
@@ -243,18 +243,18 @@ def lecture_data(lecture):
 		for achievement in achievement_list:
 			filtered_lectures = Behavior.objects.all()
 			# users = User.objects.all()
-			if userclass != 'any':
+			if userclass != 'all':
 				filtered_lectures = filtered_lectures.filter(user__userclass=userclass)
 			# 	users = users.filter(userclass=userclass)
-			if achievement != 'any':
+			if achievement != 'all':
 				filtered_lectures = filtered_lectures.filter(user__achievement=achievement)
 			# 	users = users.filter(achievement=achievement)
 			# # num_users = (users.count() or 1)
-			# if userclass == 'any' and achievement == 'any':
+			# if userclass == 'all' and achievement == 'all':
 			# 	num_users = User.objects.filter(behavior__source__slide__lecture__week = week, behavior__source__slide__lecture__week_order = week_order).distinct().count() or 1
-			# elif userclass == 'any':
+			# elif userclass == 'all':
 			# 	num_users = User.objects.filter(behavior__source__slide__lecture__week = week, behavior__source__slide__lecture__week_order = week_order, userclass=userclass).distinct().count() or 1
-			# elif achievement == 'any':
+			# elif achievement == 'all':
 			# 	num_users = User.objects.filter(behavior__source__slide__lecture__week = week, behavior__source__slide__lecture__week_order = week_order, achievement=achievement).distinct().count() or 1
 			# else:
 			# 	num_users = User.objects.filter(behavior__source__slide__lecture__week = week, behavior__source__slide__lecture__week_order = week_order, userclass=userclass, achievement=achievement).distinct().count() or 1
@@ -497,7 +497,7 @@ def top_balanced(week, week_order, k):
 			top_balanced.append(seek)
 	return top_balanced
 
-def any(lecture, k, rate):
+def all(lecture, k, rate):
 	results = []
 	if lecture == '':
 		if rate == 'any':
@@ -645,12 +645,21 @@ def top_seeks_bw(lecture, k, rate):
 	return results
 
 def top_pauses(lecture, k, rate):
+	results = []
 	if lecture == '':
-		return []
+		if rate == 'any':
+			for u in User.objects.annotate(num_pauses = Count('behavior'))\
+				.filter(num_pauses__gt=0, behavior__event_type='pause').order_by('-num_pauses')[:k]:
+				results.append(u.eventing_user_id)
+		else:
+			for u in User.objects.annotate(num_pauses = Count('behavior'))\
+				.filter(num_pauses__gt=0, behavior__event_type='pause', behavior__playback_rate = float(rate))\
+				.order_by('-num_pauses')[:k]:
+				results.append(u.eventing_user_id)
+		return results
 	tokens = lecture.split('-')
 	week = int(tokens[0])
 	week_order = int(tokens[1])
-	results = []
 	if rate == 'any':
 		for u in User.objects.annotate(num_pauses = Count('behavior'))\
 			.filter(num_pauses__gt=0, behavior__event_type='pause', behavior__source__slide__lecture__week=week, behavior__source__slide__lecture__week_order=week_order)\
@@ -770,7 +779,7 @@ def get_weekly_stats(course_id):
 	start = int(round(time.time() * 1000))
 	week_numbers = Lecture.objects.filter(course__id=course_id).values('week').distinct().order_by('week')
 	weeks = []
-	events = ['all', 'seeked', 'pause', 'ratechange', 'seeked forward', 'seeked backward']
+	events = ['all', 'seeks', 'pauses', 'ratechanges', 'forward seeks', 'backward seeks']
 	results = {}
 	for e in events:
 		results[e] = []
@@ -788,36 +797,47 @@ def get_weekly_stats(course_id):
 				lecture_obj['name'] = str(lecture.week) + '-' + str(lecture.week_order)
 				lecture_obj['x'] = lecture.week_order
 				lecture_obj['y'] = lecture.week - 1
+				lecture_obj['length'] = lecture.length
+				print 'length ' + str(lecture.length)
 
 				count_users = User.objects.filter(behavior__source__slide__lecture__week = lecture.week,
 					behavior__source__slide__lecture__week_order = lecture.week_order).distinct().count()
-				if e == 'seeked forward':
+				if e == 'forward seeks':
 					count_objs = Behavior.objects.filter(source__slide__lecture__week = lecture.week,
 						source__slide__lecture__week_order = lecture.week_order, seek_type='FW').count()
 					# count_users = User.objects.filter(behavior__source__slide__lecture__week = lecture.week,
 					# 	behavior__source__slide__lecture__week_order = lecture.week_order,
 					# 	behavior__seek_type='FW').distinct().count()
-				elif e == 'seeked backward':
+				elif e == 'backward seeks':
 					count_objs = Behavior.objects.filter(source__slide__lecture__week = lecture.week,
 						source__slide__lecture__week_order = lecture.week_order, seek_type='BW').count()
 					# count_users = User.objects.filter(behavior__source__slide__lecture__week = lecture.week,
 					# 	behavior__source__slide__lecture__week_order = lecture.week_order,
 					# 	behavior__seek_type='BW').distinct().count()
-				elif e == 'all':
+				elif e == 'seeks':
+					count_objs = Behavior.objects.filter(source__slide__lecture__week = lecture.week,
+						source__slide__lecture__week_order = lecture.week_order, event_type='seeked').count()
+					# count_users = User.objects.filter(behavior__source__slide__lecture__week = lecture.week,
+					# 	behavior__source__slide__lecture__week_order = lecture.week_order,
+					# 	behavior__event_type='seeked').distinct().count()
+				elif e == 'pauses':
+					count_objs = Behavior.objects.filter(source__slide__lecture__week = lecture.week,
+						source__slide__lecture__week_order = lecture.week_order, event_type='pause').count()
+					# count_users = User.objects.filter(behavior__source__slide__lecture__week = lecture.week,
+					# 	behavior__source__slide__lecture__week_order = lecture.week_order,
+					# 	behavior__event_type='pause').distinct().count()
+				else:
 					count_objs = Behavior.objects.filter(source__slide__lecture__week = lecture.week,
 						source__slide__lecture__week_order = lecture.week_order).count()
 					# count_users = User.objects.filter(behavior__source__slide__lecture__week = lecture.week,
 					# 	behavior__source__slide__lecture__week_order = lecture.week_order).distinct().count()
-				else:
-					count_objs = Behavior.objects.filter(source__slide__lecture__week = lecture.week,
-						source__slide__lecture__week_order = lecture.week_order, event_type=e).count()
-					# count_users = User.objects.filter(behavior__source__slide__lecture__week = lecture.week,
-					# 	behavior__source__slide__lecture__week_order = lecture.week_order,
-					# 	behavior__event_type=e).distinct().count()
 				print count_objs
-				# print count_users
-				# lecture_obj['z'] = count_objs
-				lecture_obj['z'] = round(count_objs * 1.0 / (count_users or 1), 1)
+				# total
+				lecture_obj['z'] = count_objs
+				# average per user
+				# lecture_obj['z'] = round(count_objs * 1.0 / (count_users or 1), 1)
+				# average per user per min
+				# lecture_obj['z'] = round(count_objs * 1.0 / (count_users or 1) * 60 / lecture.length, 2)
 				week_obj['data'].append(lecture_obj)
 			results[e].append(week_obj)
 	print int(round(time.time() * 1000)) - start
@@ -828,11 +848,12 @@ def get_weekly_stats_users(course_id):
 	start = int(round(time.time() * 1000))
 	week_numbers = Lecture.objects.filter(course__id=course_id).values('week').distinct().order_by('week')
 	weeks = []
-	events = ['any', 'top_seeks', 'top_seeks_fw', 'top_seeks_bw', 'top_pauses', 'rate_changer']
+	events = ['all', 'top_seeks', 'top_seeks_fw', 'top_seeks_bw', 'top_pauses', 'rate_changer']
 	rates = ['any', '0.5', '0.75', '1.0', '1.25', '1.5', '1.75', '2.0']
 	results = {}
 	for e in events:
 		for rate in rates:
+			print e + '-' + rate
 			results[e + '-' + rate] = {}
 			results[e + '-' + rate]['data'] = []
 			users = getattr(clickstream_handler, e)('', 10, rate)

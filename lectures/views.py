@@ -70,7 +70,7 @@ def lectures_users(request):
 	lectures = Lecture.objects.filter(slides_imported = True).order_by("week", "week_order")
 	return render_to_response('lectures_by_user.html', {
 		'lectures': lectures,
-		'events': ['any', 'top_seeks', 'top_seeks_fw', 'top_seeks_bw', 'top_pauses', 'rate_changer'],
+		'events': ['all', 'top_seeks', 'top_seeks_fw', 'top_seeks_bw', 'top_pauses', 'rate_changer'],
 		'rates': ['any', '0.5', '0.75', '1.0', '1.25', '1.5', '1.75', '2.0'],
 		}, context_instance=RequestContext(request))
 

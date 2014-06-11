@@ -22,7 +22,7 @@
 			<input id='user_q' name='user_q' type='text' size="60" value="{{ user_q }}" style="height:34px;" />
 		</div>
 		<input name='seq_q' type='radio' value="slide_seq" style="margin-left:30px;" {% if seq_q == "slide_seq" %}checked{% endif %} /> By slide
-		<input name='seq_q' type='radio' value="time_seq" {% if seq_q == "time_seq" %}checked{% endif %} /> By time sequence
+		<input name='seq_q' type='radio' value="time_seq" {% if seq_q == "time_seq" or not seq_q %}checked{% endif %} /> By time sequence
 		<input id='search' value='Search' type='submit' class="btn btn-primary" style="margin-left:30px;" />
 		<div class="clear_both" style="margin-bottom:20px;"></div>
 		<b>OR</b><br>

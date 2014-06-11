@@ -74,7 +74,8 @@ function redraw() {
 
         tooltip: {
             formatter: function() {
-                return 'Lecture <b>' + this.point.name + '</b><br>Corresponding behaviors count: ' + this.point.z;
+                return 'Lecture <b>' + this.point.name + '</b><br>Corresponding behaviors count: ' + this.point.z
+                + '<br>Video length: <b>' + this.point.length + '</b> seconds';
             }
         },
 
@@ -85,8 +86,8 @@ function redraw() {
         },
 
         yAxis: {
-            floor: 0,
-            min: -0.5,
+            // floor: 0,
+            min: 0,
             // max: 2.5,
             startOnTick: false,
             endOnTick: false,

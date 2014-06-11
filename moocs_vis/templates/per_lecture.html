@@ -27,7 +27,7 @@
 		<div class="userclass_options left">
 			Choose user class:
 			<div class="toggle-btn-grp joint-toggle">
-				<label onclick="" class="toggle-btn {% if not userclass %}success{% endif %}"><input type="radio" class="visuallyhidden" name="userclass_q" value="any" checked>any</label>
+				<label onclick="" class="toggle-btn {% if not userclass %}success{% endif %}"><input type="radio" class="visuallyhidden" name="userclass_q" value="all" checked>all</label>
 				{% for c in userclass_list %}
 					<label onclick="" class="toggle-btn {% if c == userclass %}success{% endif %}"><input type="radio" class="visuallyhidden" name="userclass_q" value="{{ c }}" {% if c == userclass %}checked{% endif %}>{{ c }}</label>
 				{% endfor %}
@@ -36,7 +36,7 @@
 		<div class="achievement_options left">
 			Choose achievement:
 			<div class="toggle-btn-grp joint-toggle">
-				<label onclick="" class="toggle-btn {% if not achievement %}success{% endif %} achievement"><input type="radio" class="visuallyhidden" name="achievement_q" value="any" checked>any</label>
+				<label onclick="" class="toggle-btn {% if not achievement %}success{% endif %} achievement"><input type="radio" class="visuallyhidden" name="achievement_q" value="all" checked>all</label>
 				{% for a in achievement_list %}
 					<label onclick="" class="toggle-btn {% if a == achievement %}success{% endif %} achievement"><input type="radio" class="visuallyhidden" name="achievement_q" value="{{ a }}" {% if a == achievement %}checked{% endif %}>{{ a }}</label>
 				{% endfor %}
@@ -44,11 +44,11 @@
 		</div>
 		<div class="clear_both"></div>
 		<div class="slider left">
-			Min average events per user (x 10<sup>-4</sup>):
+			Connection strength threshold:
 			<div id="level_slider" class="myslider"></div>
 		</div>
 		<div class="show_option left">
-			<label for="show_self">Show self-jump behaviors</label> <input type="checkbox" id="show_self" checked />
+			<label for="show_self">Show internal seeks</label> <input type="checkbox" id="show_self" checked />
 		</div>
 		<div style="right:0;position:absolute;">
 			<button id="toggle_legend" class="btn btn-info">Toggle legend</button>

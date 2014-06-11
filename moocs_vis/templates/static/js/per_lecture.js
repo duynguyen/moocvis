@@ -263,8 +263,8 @@ function drawGraph() {
     });
     $("#slide").html('<img src="' + d.url + '" />');
     $("#slide_name").html("<span style='color:red;text-decoration:underline;font-size:20px;'>" + d.slide + "</span><br>total = "
-      + round(d.in + d.out + d.incl, 5) + " / user<br>in = " + round(d.in, 5) + " / user<br>out = "
-      + round(d.out, 5) + " / user<br>internal = " + round(d.incl, 5) + " / user");
+      + round(d.in + d.out + d.incl, 5) + " seeks<br>in = " + round(d.in, 5) + " seeks<br>out = "
+      + round(d.out, 5) + " seeks<br>internal = " + round(d.incl, 5) + " seeks");
     var nodeData = [{orient: 'in', strength: d.in}, {orient: 'out', strength: d.out}];
     // $("#throughtput").html(d.slide);
     var maxi1 = d3.max(getThroughput('in'), function(d) { return d['in']; });

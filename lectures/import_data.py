@@ -52,7 +52,7 @@ def import_anonymous_behaviors(week, week_order):
 					playback_rate = float(row['playbackRate']), prev_playback_rate = prev_rate, duration = 0,
 					source = slideplay_source, target = slideplay_target)
 				sk.save()
-			else:
+			elif not row['pauseType'] == 'DEFAULT':
 				occur_time = round(float(row['currentTime']))
 				duration = 0
 				if eventType == 'pause':
