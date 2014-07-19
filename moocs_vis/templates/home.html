@@ -4,9 +4,23 @@
 
 {% block content %}
 <div class="page-title">
-	<h2>Welcome to our website!</h2>
+	<h2>Welcome</h2>
 </div>
-<div class="dashboard-container" style="text-align:center;">
-	<img src="{{ STATIC_URL }}img/moocs.jpg" width="750">
+<div class="dashboard-container">
+	<p class="page-description">
+		Functional Programming Principles in Scala by Professor Martin Odersky was the first introduced MOOC from
+EPFL. The first version was published on Coursera in 2012 and attracts more than 60,000 registrations from people
+all over the world. That brings a huge opportunity to explore the data collected from those "early birds" in order to
+improve the quality of the course, especially the structure of video lectures, as well as derive valuable lessons from it
+to produce better MOOCs in the future.<br>
+For that purpose, we take the large dataset of clickstream events from Coursera, process it to produce a more useful
+dataset that can be used for data mining, machine learning and visualization. The main focus of this project will be
+on the visualization of users' clickstream events during video watching time. <br>
+		You can visit the home page of
+		<a href="https://www.coursera.org/course/progfun" target="_blank">
+			Functional Programming Principles in Scala on Coursera
+		</a>.
+	</p>
+	<div style="text-align:center;"><img src="{{ STATIC_URL }}img/moocs.jpg" width="750"></div>
 </div>
 {% endblock %}

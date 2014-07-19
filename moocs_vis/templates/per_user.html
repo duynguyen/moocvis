@@ -11,6 +11,11 @@
 <script src="http://d3js.org/d3.v3.js"></script>
 <script src="http://code.jquery.com/ui/1.10.4/jquery-ui.js"></script>
 <div class="dashboard-container">
+	<p class="page-description">
+		Here the concept of navigation trace is applied to explain the historical activities of each user. The Markov chain is specifically visualized for each user with an extended scope of all possible events: forward and backward seeks (either independently or sequentially), pauses, and ratechanges (either up or down).<br>
+		<!-- The input is eventing user id which is unique for each user. We can either enter it directly into the text box (if we know the eventing user id), or choose a user based on available combined indicators. An indicator consists of two criteria: event (seeks, forward seeks, backward seeks, pauses, ratechanger) and playback rate (ranging from 0.5 to 2.0). The top ten users with the highest number of events would be returned for each indicator.<br>
+		Furthermore, there are two options that allow displaying state order in different sequences: by time sequence in the video lecture (so that a physical slide might repeat in multiple states if the teacher goes back; e.g. slide 3, slide 3B, slide 3C, etc.), and by slide order in the PowerPoint slides. The user information panel is also useful for analyzing learning statistics (userclass, final grade and achievement) of the user being analyzed. -->
+	</p>
 	<form id='search_form' method='get'>
 		<select id='lecture_q' name='lecture_q' class="form-control inline-select left">
 			{% for l in lecture_list %}
@@ -46,7 +51,7 @@
 	<div class="left" style="position:relative;width:500px;">
 		<button id="user_info_btn" class="btn btn-info" style="margin-top:40px;">User information</button>
 		<div id="user_info" class="user_info">
-			Country: <span id="user_country"></span><br>
+			<!-- Country: <span id="user_country"></span><br> -->
 			Userclass: <span id="user_class"></span><br>
 			Grade: <span id="user_grade"></span><br>
 			Achievement: <span id="user_achievement"></span>

@@ -67,7 +67,7 @@ function redraw(data, yAxis) {
     labels = {
         enabled: true,
         formatter: function() {
-            return 'sad';
+            return '';
         }
     }
     $.each(data, function(i,d) {

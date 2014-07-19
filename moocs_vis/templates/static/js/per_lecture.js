@@ -41,6 +41,11 @@ $(".toggle-btn input[type=radio]").change(function() {
     reDraw($("#lecture_q").val());
 });
 
+$("#lecture_q").change(function() {
+  if($("#lecture_q").val())
+    $("#search").click();
+});
+
 $('#disp_week').click(function() {
   $("#compare-dialog").html('');
   tooltipDiv = d3.select("#compare-dialog").append("div")   // declare the properties for the div used for the tooltips
@@ -88,6 +93,14 @@ function reDraw(lecture) {
   
   var userclass = $('input[name="userclass_q"]:checked').val(),
       achievement = $('input[name="achievement_q"]:checked').val();
+
+  if(userclass == "viewers" || userclass == "inactive") {
+    $(".achievement_options").addClass('hidden');
+    // $("input[value=all]").prop("checked", true);
+    achievement = "all";
+  } else {
+    $(".achievement_options").removeClass('hidden');
+  }
 
   percent = getPercent(lecture);
   graph = jQuery.extend(true, {}, results[userclass + '-' + achievement]);

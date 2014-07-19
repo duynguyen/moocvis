@@ -1,16 +1,19 @@
 {% extends "base.html" %}
 
-{% block title %}Visualization per lecture video{% endblock %}
+{% block title %}Overlook of all lectures{% endblock %}
 
 {% block content %}
 <div class="page-title">
-	<h2>Statistics of all lectures</h2>
+	<h2>Overlook of events by video lectures</h2>
 </div>
 <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
 <script src="http://d3js.org/d3.v3.js"></script>
 <script src="http://code.highcharts.com/highcharts.js"></script>
 <script src="http://code.highcharts.com/highcharts-more.js"></script>
 <div class="dashboard-container">
+	<p class="page-description">
+		This illustrates the overall distribution of events in each lecture. Events can be an aggregation of all types, or filtered by a particular event type. You may also choose the data source to be visualized, either the total number of events, average events made by each user or the average by user per minute of video playing time.
+	</p>
 	Filter
 	<select id="option" class="form-control inline-select"></select>
 	events

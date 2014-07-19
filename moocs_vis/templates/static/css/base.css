@@ -320,8 +320,15 @@
   margin-top: 0;
 }
 
+p.page-description {
+  color: #999;
+  padding-left: 20px;
+  border-left: double #aaa 5px;
+}
+
 .navbar-collapse {
   background-color: black;
+  padding: 0 100px;
 }
 
 .navbar-collapse a {
@@ -337,7 +344,7 @@
 }
 
 .inline-select {
-  width: 150px;
+  width: 200px;
   display: inline;
 }
 
