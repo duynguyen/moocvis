@@ -37,7 +37,8 @@ def import_anonymous_behaviors(week, week_order):
 				prev_rate = prev_row['playbackRate']
 			else:
 				prev_rate = row['playbackRate']
-			print datetime.datetime.fromtimestamp(float(row['eventTime']) / 1e3).replace(tzinfo=utc)
+			# print datetime.datetime.fromtimestamp(float(row['eventTime']) / 1e3).replace(tzinfo=utc)
+			print user
 			# Add seeks
 			if eventType == 'seeked':
 				if user not in seek_users:

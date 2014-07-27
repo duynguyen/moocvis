@@ -1,0 +1,15 @@
+id,start_time,end_time,type,order,image_url
+1,0,20,s,1,http://duypnguyen.hostingsiteforfree.com/moocs/images/week1-4_s1.png
+2,21,60,s,2,http://duypnguyen.hostingsiteforfree.com/moocs/images/week1-4_s2.png
+3,61,113,d,1,http://duypnguyen.hostingsiteforfree.com/moocs/images/week1-4_s3.png
+4,114,151,s,4,http://duypnguyen.hostingsiteforfree.com/moocs/images/week1-4_s4.png
+5,152,160,d,1,http://duypnguyen.hostingsiteforfree.com/moocs/images/week1-4_q1.png
+6,161,202,s,5,http://duypnguyen.hostingsiteforfree.com/moocs/images/week1-4_s5.png
+7,203,222,q,1,http://duypnguyen.hostingsiteforfree.com/moocs/images/week1-4_s6.png
+8,223,268,s,6,
+9,269,281,s,7,http://duypnguyen.hostingsiteforfree.com/moocs/images/week1-4_s7.png
+10,282,335,d,2,http://duypnguyen.hostingsiteforfree.com/moocs/images/week1-4_s8.png
+11,336,376,s,9,http://duypnguyen.hostingsiteforfree.com/moocs/images/week1-4_q2.png
+12,377,408,s,10,http://duypnguyen.hostingsiteforfree.com/moocs/images/week1-4_d1.png
+13,409,444,s,11,http://duypnguyen.hostingsiteforfree.com/moocs/images/week1-4_d1.png
+14,445,480,s,12,http://duypnguyen.hostingsiteforfree.com/moocs/images/week1-4_d1.png

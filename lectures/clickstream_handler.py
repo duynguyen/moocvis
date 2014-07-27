@@ -162,6 +162,7 @@ def importBehaviors(content, week, week_order):
 	for row in content:
 		# Get nonclick users
 		user = row['user']
+		print user
 		eventType = row['eventType']
 		if user not in users:
 			users.append(user)
