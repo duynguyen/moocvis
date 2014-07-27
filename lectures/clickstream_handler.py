@@ -78,8 +78,19 @@ def importUsers():
 		User(user_id=row['user_id'], session_user_id = row['session_user_id'], eventing_user_id = row['eventing_user_id'],
 			country_code = row['country_code'], country_name = row['country_name']).save()
 
+def importUsersWithStats():
+	content = getArrayFromCsv('files/users.csv')
+
+	for row in content:
+		grade = None
+		if row['grade'] != "NULL":
+			grade = float(row['grade'])
+		User(user_id=row['user_id'], session_user_id = row['session_user_id'], eventing_user_id = row['eventing_user_id'],
+			country_code = row['country_code'], country_name = row['country_name'], grade = grade,
+			userclass = row['userclass'], achievement = row['achievement']).save()
+
 def importUsersStats():
-	content = getArrayFromCsv('files/users_bk.csv')
+	content = getArrayFromCsv('files/users.csv')
 	for row in content:
 		u_list = User.objects.filter(user_id=int(row['user_id']))
 		if u_list and len(u_list) == 1:
