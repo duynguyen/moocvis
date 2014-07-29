@@ -52,19 +52,19 @@ class Slide(models.Model):
         	self.lecture.week, self.lecture.week_order,
         	self.content_name, self.content_order)
 
-	def throughput_in(self, userclass='any', achievement='any'):
+	def throughput_in(self, userclass='all', achievement='all'):
 		total = 0
 		for play in self.slideplay_set.all():
 			total += play.throughput_in(userclass, achievement)
 		return total
 	
-	def throughput_out(self, userclass='any', achievement='any'):
+	def throughput_out(self, userclass='all', achievement='all'):
 		total = 0
 		for play in self.slideplay_set.all():
 			total += play.throughput_out(userclass, achievement)
 		return total
 
-	def throughput_incl(self, userclass='any', achievement='any'):
+	def throughput_incl(self, userclass='all', achievement='all'):
 		total = 0
 		for play in self.slideplay_set.all():
 			total += play.throughput_incl(userclass, achievement)
