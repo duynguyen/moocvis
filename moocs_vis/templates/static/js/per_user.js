@@ -14,6 +14,14 @@ var seq;
 updateSeq();
 reloadIndicators(lecture);
 var keys = [];
+var events_mapping = {'all': 'All users', 'top_seeks': 'Users making the most seeks',
+      'top_seeks_fw': 'Users making the most forward seeks',
+      'top_seeks_bw': 'Users making the most forward seeks',
+      'top_pauses': 'Users making the most pauses',
+      'rate_changer': 'Users changing playback rate the most',
+      'highest_rate': 'Users playing at highest average rate',
+      'lowest_rate': 'Users playing at lowest average rate'};
+var indicator_options = ["top_seeks", "top_seeks_fw", "top_seeks_bw", "top_pauses", "rate_changer", "highest_rate", "lowest_rate"];
 
 // init value
 if($('input[name="playrate_q"]:checked').length == 0) {
@@ -21,8 +29,8 @@ if($('input[name="playrate_q"]:checked').length == 0) {
   $('input[name="playrate_q"]:first').parent().toggleClass("success");
 }
 
-$.each(indicators.indicators, function(i, k) {
-  $("#select_indicator").append("<option value='" + k + "'>" + k + "</option>");
+$.each(indicator_options, function(i, k) {
+  $("#select_indicator").append("<option value='" + k + "'>" + events_mapping[k] + "</option>");
 });
 
 drawGraph(lecture, user);
@@ -74,14 +82,19 @@ function updateSeq() {
 }
 
 function updateUserList() {
-  $('#indicator_option').html('');
-  updateSeq();
-  var playrate = $('input[name="playrate_q"]:checked').val();
-  var userList = indicators[$("#select_indicator").val() + '-' + playrate];
-  $.each(userList, function(i, d) {
-    $('#indicator_option').append("<a href='/per-user/?lecture_q=" + lecture + "&seq_q=" + seq +
-      "&user_q=" + d + "&playrate_q=" + playrate + "'>" + d + "</a><br>");
-  });
+  if(!$("#select_indicator").val()) {
+    $('#indicator_option').html('');
+  } else {
+    $('#indicator_option').html('');
+    updateSeq();
+    // var playrate = $('input[name="playrate_q"]:checked').val();
+    var playrate = "any";
+    var userList = indicators[$("#select_indicator").val() + '-' + playrate];
+    $.each(userList, function(i, d) {
+      $('#indicator_option').append("<a href='/per-user/?lecture_q=" + lecture + "&seq_q=" + seq +
+        "&user_q=" + d + "&playrate_q=" + playrate + "'>" + d + "</a><br>");
+    });
+  }
 }
 
 function drawGraph(lecture, user) {

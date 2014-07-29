@@ -18,12 +18,12 @@
 	<div class="left">
 		<b>Choose indicator:</b>
 		<select id='select_indicator' name='indicator_q' class="form-control inline-select">
-			{% for a in events %}
-				<option value="{{ a }}">{{ a }}</option>
+			{% for k, v in events_mapping.items %}
+				<option value="{{ k }}">{{ v }}</option>
 			{% endfor %}
 		</select>
 	</div>
-	<div class="right">
+	<!-- <div class="right">
 		<b>Choose playback rate:</b>
 		<div class="toggle-btn-grp joint-toggle" style="display:inline;">
 			{% for a in rates %}
@@ -32,7 +32,7 @@
 				</label>
 			{% endfor %}
 		</div>
-	</div>
+	</div> -->
 	<div class="clear_both"></div>
 	<b>OR</b><br><br>
 	<div class="left">

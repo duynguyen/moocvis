@@ -1,5 +1,7 @@
 from django.db import models
 
+root_image_url = "http://cedegesrv2.epfl.ch/moocvis/images/slides/"
+
 class User(models.Model):
 	user_id = models.IntegerField()
 	session_user_id = models.CharField(max_length=80)
@@ -70,35 +72,39 @@ class Slide(models.Model):
 			total += play.throughput_incl(userclass, achievement)
 		return total
 
+	def url(self):
+		return root_image_url + 'week' + str(self.lecture.week) + '-' + str(self.lecture.week_order)\
+			+ '_' + self.content_type + str(self.content_order) + '.png'
+
 class SlidePlay(models.Model):
 	slide = models.ForeignKey(Slide)
 	start_time = models.IntegerField()
 	end_time = models.IntegerField()
 	order = models.SmallIntegerField()
 
-	def throughput_in(self, userclass='any', achievement='any'):
+	def throughput_in(self, userclass='all', achievement='all'):
 		filtered = Behavior.objects.filter(~models.Q(source = self), target = self, event_type = 'seeked')
-		if not userclass == 'any':
+		if not userclass == 'all':
 			filtered = filtered.filter(user__userclass=userclass)
-		if not achievement == 'any':
+		if not achievement == 'all':
 			filtered = filtered.filter(user__achievement=achievement)
 		return filtered.count()
 		# return len(Behavior.objects.filter(event_type = 'seeked', target = self))
 	
-	def throughput_out(self, userclass='any', achievement='any'):
+	def throughput_out(self, userclass='all', achievement='all'):
 		filtered = Behavior.objects.filter(~models.Q(target = self), source = self, event_type = 'seeked')
-		if not userclass == 'any':
+		if not userclass == 'all':
 			filtered = filtered.filter(user__userclass=userclass)
-		if not achievement == 'any':
+		if not achievement == 'all':
 			filtered = filtered.filter(user__achievement=achievement)
 		return filtered.count()
 		# return len(Behavior.objects.filter(event_type = 'seeked', source = self))
 
-	def throughput_incl(self, userclass='any', achievement='any'):
+	def throughput_incl(self, userclass='all', achievement='all'):
 		filtered = Behavior.objects.filter(target = self, source = self, event_type = 'seeked')
-		if not userclass == 'any':
+		if not userclass == 'all':
 			filtered = filtered.filter(user__userclass=userclass)
-		if not achievement == 'any':
+		if not achievement == 'all':
 			filtered = filtered.filter(user__achievement=achievement)
 		return filtered.count()
 

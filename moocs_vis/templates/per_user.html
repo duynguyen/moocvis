@@ -30,13 +30,16 @@
 		<input name='seq_q' type='radio' value="time_seq" {% if seq_q == "time_seq" or not seq_q %}checked{% endif %} /> By time sequence
 		<input id='search' value='Search' type='submit' class="btn btn-primary" style="margin-left:30px;" />
 		<div class="clear_both" style="margin-bottom:20px;"></div>
-		<b>OR</b><br>
+	</form>
+	<b>OR</b><br>
+	<div>
 		<div class="left">
 			Choose indicator:
 			<select id='select_indicator' name='indicator_q' class="form-control inline-select">
+				<option value="">Please choose an indicator to show</option>
 			</select>
 		</div>
-		<div class="right">
+		<!-- <div class="right">
 			Choose playback rate:
 			<div class="toggle-btn-grp joint-toggle" style="display:inline;">
 				{% for a in rates %}
@@ -45,9 +48,11 @@
 					</label>
 				{% endfor %}
 			</div>
-		</div>
+		</div> -->
+		<span class="left" style="line-height:25px;margin-left:50px;">Result:</span>
+		<div id='indicator_option' class='left indicator_option'></div>
 		<div class="clear_both"></div>
-	</form>
+	</div>
 	<div class="left" style="position:relative;width:500px;">
 		<button id="user_info_btn" class="btn btn-info" style="margin-top:40px;">User information</button>
 		<div id="user_info" class="user_info">
@@ -61,7 +66,6 @@
 		<button id="toggle_legend" class="btn btn-info" style="margin-top:40px;">Toggle legend</button>
 		<img id="legend_img" src="{{ STATIC_URL }}img/explanation2.png" style="display:none;position:absolute;right:0;z-index:1;" width="500">
 	</div>
-	<div id='indicator_option' class='indicator_option invisible'></div>
 </div>
 <div class="clear_both"></div>
 <div id="vis" style="position:relative;">Please choose options to display</div>

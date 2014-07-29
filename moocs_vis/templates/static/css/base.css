@@ -214,7 +214,7 @@
 .indicator_option {
   border: 3px solid #666;
   padding: 10px;
-  margin: 100px 10px 10px 10px;
+  margin: 0 50px;
 }
 
 .userclass_options {
@@ -239,48 +239,52 @@
     margin: 3px 0; 
 }
 .toggle-btn { 
-    text-align:centre; 
-    margin:5px 2px;
-    padding:0.4em 3em; 
-    color:#000; 
-    background-color:#FFF; 
-    border-radius:10px; 
-    display:inline-block; 
-    border:solid 1px #CCC; 
-    cursor:pointer;
+    text-align: centre; 
+    margin: 5px 2px;
+    padding: 0.4em 3em; 
+    color: #000; 
+    background-color: #fff; 
+    border-radius: 10px; 
+    display: inline-block; 
+    border: solid 1px #ccc;
+    cursor: pointer;
 }
 
 .toggle-btn-grp.joint-toggle .toggle-btn { 
     margin: 5px -2px; 
-    padding:0.4em 2em; 
-    border-radius:0;
-    border-right-color:white;
+    padding: 0.4em 2em; 
+    border-radius: 0;
 }
 .toggle-btn-grp.joint-toggle .toggle-btn:first-child { 
-    margin-left:2px; 
+    margin-left: 2px; 
     border-radius: 10px 0px 0px 10px; 
 }
 .toggle-btn-grp.joint-toggle .toggle-btn:last-child { 
-    margin-right:2px;  
+    margin-right: 2px;  
     border-radius: 0px 10px 10px 0px;
-    border-right:solid 1px #CCC;
+    border-right: solid 1px #ccc;
 }
 
 
 .toggle-btn:hover { 
-    border:solid 1px #a0d5dc !important; 
+    border:solid 1px #a0d5dc; 
     background:#f1fdfe;
 }
 
 
 .toggle-btn.success { 
-    background:lightgreen;
-    border:solid 1px green !important; 
+    background: lightgreen;
+    border: solid 1px green; 
 }
 
 .toggle-btn.achievement.success { 
     background: orange;
-    border:solid 1px orange !important; 
+    border: solid 1px orange; 
+}
+
+.toggle-btn.disabled {
+    background: #ccc !important;
+    border: solid 1px #ccc !important;
 }
 
 .visuallyhidden { 
@@ -344,7 +348,7 @@ p.page-description {
 }
 
 .inline-select {
-  width: 200px;
+  width: 300px;
   display: inline;
 }
 

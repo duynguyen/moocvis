@@ -8,6 +8,14 @@ from lectures.models import Lecture
 
 import json
 
+events_mapping = {'all': 'All users', 'top_seeks': 'Users making the most seeks',
+			'top_seeks_fw': 'Users making the most forward seeks',
+			'top_seeks_bw': 'Users making the most forward seeks',
+			'top_pauses': 'Users making the most pauses',
+			'rate_changer': 'Users changing playback rate the most',
+			'highest_rate': 'Users playing at highest average rate',
+			'lowest_rate': 'Users playing at lowest average rate'}
+
 def home(request):
 	return render_to_response('home.html', context_instance=RequestContext(request))
 
@@ -70,7 +78,8 @@ def lectures_users(request):
 	lectures = Lecture.objects.filter(slides_imported = True).order_by("week", "week_order")
 	return render_to_response('lectures_by_user.html', {
 		'lectures': lectures,
-		'events': ['all', 'top_seeks', 'top_seeks_fw', 'top_seeks_bw', 'top_pauses', 'rate_changer'],
+		# 'events': ['all', 'top_seeks', 'top_seeks_fw', 'top_seeks_bw', 'top_pauses', 'rate_changer'],
+		'events_mapping': events_mapping,
 		'rates': ['any', '0.5', '0.75', '1.0', '1.25', '1.5', '1.75', '2.0'],
 		}, context_instance=RequestContext(request))
 

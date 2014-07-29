@@ -5,16 +5,16 @@
 {% block content %}
 <div class="page-title">
 	<h2>Visualization of seek events in a lecture video</h2>
+	<p class="page-description">
+		The concept of this visualization is state transition diagram, which is typically visualized as a graph where nodes represent the states and the lines connecting nodes reflect probabilistic or weighted transitions between states.<br>
+		There are several filters that allow refining the visualized results based on different categories. For example we can choose active from userclasses and normal from achievements to select the average seeks of users who fall into those criteria. Furthermore, the slider allows us to adjust the granularity of data we want to see. The higher threshold set in the slider, the more insignificant links are removed and only links with larger strength than the threshold are taken into account.
+	</p>
 </div>
 <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
 <script src="http://d3js.org/d3.v3.js"></script>
 <script src="http://code.jquery.com/ui/1.10.4/jquery-ui.js"></script>
 <script src="{{ STATIC_URL }}js/jquery.ui.labeledslider.js"></script>
 <div class='container'>
-	<p class="page-description">
-		The concept of this visualization is state transition diagram, which is typically visualized as a graph where nodes represent the states and the lines connecting nodes reflect probabilistic or weighted transitions between states.<br>
-		There are several filters that allow refining the visualized results based on different categories. For example we can choose active from userclasses and normal from achievements to select the average seeks of users who fall into those criteria. Furthermore, the slider allows us to adjust the granularity of data we want to see. The higher threshold set in the slider, the more insignificant links are removed and only links with larger strength than the threshold are taken into account.
-	</p>
 	<div class="dashboard-container">
 		<div class="search_form">
 			<form id='#search_form' method='get'>

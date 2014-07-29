@@ -57,7 +57,8 @@ drawAll();
 
 function drawAll() {
     option = $("#select_indicator").val();
-    rate = $('input[name="playrate_q"]:checked').val();
+    // rate = $('input[name="playrate_q"]:checked').val();
+    rate = 'any';
     key = option + '-' + rate;
     redraw(lecturesData.data[key].data, lecturesData.data[key]['users']);
 }

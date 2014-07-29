@@ -33,6 +33,9 @@ if(parseInt($("input[name=nonclick_rate]").val()) > 0) {
 // drawGostraight();
 
 $(".toggle-btn input[type=radio]").change(function() {
+    if($(this).parent().hasClass("disabled")) {
+      return;
+    }
     if($(this).attr("name")) {
         $(this).parent().addClass("success").siblings().removeClass("success")
     } else {
@@ -95,11 +98,11 @@ function reDraw(lecture) {
       achievement = $('input[name="achievement_q"]:checked').val();
 
   if(userclass == "viewers" || userclass == "inactive") {
-    $(".achievement_options").addClass('hidden');
+    $(".achievement_options .toggle-btn").addClass('disabled');
     // $("input[value=all]").prop("checked", true);
     achievement = "all";
   } else {
-    $(".achievement_options").removeClass('hidden');
+    $(".achievement_options .toggle-btn").removeClass('disabled');
   }
 
   percent = getPercent(lecture);
