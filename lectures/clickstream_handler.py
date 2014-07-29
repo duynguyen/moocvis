@@ -1020,9 +1020,10 @@ def generate_indicators():
 	for lecture in lectures:
 		lecture_name = str(lecture.week) + "-" + str(lecture.week_order)
 		print lecture_name
+		response_data[lecture_name] = {}
 		for indicator in indicators:
-			response_data[indicator] = getattr(clickstream_handler, indicator)(lecture_name, 10, "any")
-	return response_data
+			response_data[lecture_name][indicator] = getattr(clickstream_handler, indicator)(lecture_name, 10, "any")
+	return json.dumps(response_data)
 
 def generate_per_lecture_by_week(week):
 	indicators = ['top_seeks', 'top_seeks_fw', 'top_seeks_bw', 'top_pauses', 'rate_changer', 'highest_rate', 'lowest_rate']
@@ -1033,7 +1034,7 @@ def generate_per_lecture_by_week(week):
 		result = lecture_data(lecture_name)
 		response_data[lecture_name] = result
 		print '=====================' + lecture_name + "====================="
-	return response_data
+	return json.dumps(response_data)
 
 
 def handle_slides_file(slides_f):
