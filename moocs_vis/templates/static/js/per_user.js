@@ -24,10 +24,10 @@ var events_mapping = {'all': 'All users', 'top_seeks': 'Users making the most se
 var indicator_options = ["top_seeks", "top_seeks_fw", "top_seeks_bw", "top_pauses", "rate_changer", "highest_rate", "lowest_rate"];
 
 // init value
-if($('input[name="playrate_q"]:checked').length == 0) {
-  $('input[name="playrate_q"]:first').attr('checked', 'checked');
-  $('input[name="playrate_q"]:first').parent().toggleClass("success");
-}
+// if($('input[name="playrate_q"]:checked').length == 0) {
+//   $('input[name="playrate_q"]:first').attr('checked', 'checked');
+//   $('input[name="playrate_q"]:first').parent().toggleClass("success");
+// }
 
 $.each(indicator_options, function(i, k) {
   $("#select_indicator").append("<option value='" + k + "'>" + events_mapping[k] + "</option>");
@@ -89,7 +89,7 @@ function updateUserList() {
     updateSeq();
     // var playrate = $('input[name="playrate_q"]:checked').val();
     var playrate = "any";
-    var userList = indicators[$("#select_indicator").val() + '-' + playrate];
+    var userList = indicators[$("#select_indicator").val()];
     $.each(userList, function(i, d) {
       $('#indicator_option').append("<a href='/per-user/?lecture_q=" + lecture + "&seq_q=" + seq +
         "&user_q=" + d + "&playrate_q=" + playrate + "'>" + d + "</a><br>");
